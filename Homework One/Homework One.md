@@ -7,7 +7,7 @@
 `4b` is invalid, since it starts with a number.
 
 `a1BC` is valid, shown by the parse tree below:
-![[Pasted image 20250122123544.png | Parse Tree for `a1BC` | 300]]
+![[Pasted image 20250123113049.png | Parse tree for `a1BC` | 400]]
 
 `X_1` is invalid, since `_` is not a letter or digit.
 ## Question 2
@@ -108,13 +108,19 @@ Nesting a list within a list is valid, shown by the parse tree below:
 ![[Pasted image 20250123083304.png | Parse tree for nested lists | 300]]
 ## Question 7
 ```python
-a = 0
+a=0
 ```
 ## Question 8
 ```python
-while 0 {}
+while 0{}
 ```
 ## Question 9
 ```python
 func a(){}
 ```
+## Semantics
+Semantics are, generally, much trickier than syntax, with three common approaches:
+1. **Operational semantics** describe the meaning of a program by executing it on a machine, either real or abstract.
+2. **Axiomatic semantics** describe the meaning using assertions about conditions, can prove properties of program using formal logic.
+3. **Denotational semantics** describe the meaning by consulting a detailed mathematical model of each language entity.
+	* precise, but exacting.
