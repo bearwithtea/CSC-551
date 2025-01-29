@@ -29,7 +29,7 @@
 
 `-.2` is invalid, since there needs to be a number preceding the decimal point.
 `--9` is invalid, since the preceding `-` is not repetitive.
-`E4` is invalid, since there needs to be a preceding number before the `E`.
+`E4` is invalid, since there needs to be a number preceding the `E`.
 
 `-3e2` is valid, shown by the parse tree below:
 ![[Pasted image 20250128091700.png | Parse tree for `-3e2` | 400]]
@@ -38,13 +38,13 @@
 ## Question 3
 >Which of the following are valid expressions? For each valid expression, provide a parse tree (with the `expr` abstraction at the root). If invalid, briefly describe what aspect violates the rules.
 
-`x` is valid, shown by the parse tree below:
-![[Pasted image 20250123161359.png | Parse tree for `x` | 300]]
+`x` is valid, shown by the parse tree below: %%said was fine%%
+![[Pasted image 20250123161359.png | Parse tree for `x` | 150]]
 
 `(x)` is valid, shown by the parse tree below:
 ![[Pasted image 20250123161102.png | Parse tree for `(x)` | 300]]
 
-`(-x)`  is invalid, because `-` is not a valid `<id>` or `<op>`.
+`(-x)`  is invalid, because `-X` is not a valid `<id>` or `<op>`.
 
 `(x + 1)` is invalid, because `+` is not a valid expression.
 
@@ -81,7 +81,7 @@ else
 }
 ```
 is valid, shown by the parse tree below:
-![[Pasted image 20250128142334.png | 600]]
+![[Pasted image 20250128142334.png | 1200]]
 
 ```python
 if (avg >= 80)
@@ -101,7 +101,7 @@ is invalid because there must be `{}` after the `if` statement
 >Is it valid to mix the types of values in a list, e.g., ["foo" 3]? If so provide a parse tree for this list expression. If not, explain why not.
 
 Mixing the types of a list is valid, shown by the the parse tree below:
-![[Pasted image 20250128143031.png | Parse tree for mixed list | 500]]
+![[Pasted image 20250129124812.png | Parse tree for mixed list | 500]]
 ## Question 6
 >Is it valid to nest a list inside another list, e.g., [1 [2 3]]? If so provide a parse tree for this list expression. If not, explain why not.
 
