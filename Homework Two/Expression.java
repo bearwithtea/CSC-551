@@ -42,7 +42,8 @@ public class Expression {
         } else if (
             this.tok.getType() != Token.Type.IDENTIFIER &&
             this.tok.getType() != Token.Type.NUM_LITERAL &&
-            this.tok.getType() != Token.Type.BOOL_LITERAL
+            this.tok.getType() != Token.Type.BOOL_LITERAL &&
+            this.tok.getType() != Token.Type.CHAR_LITERAL
         ) {
             throw new Exception(
                 "SYNTAX ERROR: Unknown value (" + this.tok + ")."
@@ -69,6 +70,8 @@ public class Expression {
                 return new NumberValue(Double.parseDouble(this.tok.toString()));
             } else if (this.tok.getType() == Token.Type.BOOL_LITERAL) {
                 return new BooleanValue(Boolean.valueOf(this.tok.toString()));
+            } else if (this.tok.getType() == Token.Type.CHAR_LITERAL) {
+                return new CharValue(this.tok.toString().charAt(1));
             }
         } else if (this.tok.toString().equals("[")) {
             ArrayList<DataValue> vals = new ArrayList<DataValue>();
@@ -107,37 +110,88 @@ public class Expression {
                 }
                 return new NumberValue(returnVal);
             } else if (this.tok.getType() == Token.Type.BOOL_FUNC) {
-                if (this.exprs.size() < 2) {
-                    throw new Exception(
-                        "RUNTIME ERROR: Incorrect arity in comparison expression."
-                    );
-                }
-                for (int i = 0; i < this.exprs.size() - 1; i++) {
-                    DataValue val1 = this.exprs.get(i).evaluate();
-                    DataValue val2 = this.exprs.get(i + 1).evaluate();
-                    if (val1.getType() != val2.getType()) {
+                if (this.tok.toString().equals("not")) { //if the token is not
+                    if (this.exprs.size() != 1) { //if the size of the expression is not 1
                         throw new Exception(
-                            "RUNTIME ERROR: Type mismatch in comparison."
+                            "RUNTIME ERROR: The `not` operator requires one expression." //throw an exception
+                        );
+                    } else { //otherwise
+                        DataValue val = this.exprs.get(0).evaluate(); //evaluate the expression
+                        if (val.getType() != DataValue.Type.BOOLEAN) { //if the value is not a boolean
+                            throw new Exception(
+                                "RUNTIME ERROR: Boolean value expected." //throw an exception
+                            );
+                        } else { //otherwise
+                            return new BooleanValue(
+                                !((Boolean) val.getValue()) // negate the value
+                            );
+                        }
+                    }
+                } else if (
+                    this.tok.toString().equals("and") ||
+                    this.tok.toString().equals("or")
+                ) {
+                    if (this.exprs.size() < 2) {
+                        throw new Exception(
+                            "RUNTIME ERROR: The number of arguments in an `and` or `or` expression must be greater than or equal to two."
+                        );
+                    } else {
+                        for (int i = 0; i < this.exprs.size(); i++) {
+                            DataValue val = this.exprs.get(i).evaluate();
+                            if (val.getType() != DataValue.Type.BOOLEAN) {
+                                throw new Exception(
+                                    "RUNTIME ERROR: Boolean value expected."
+                                );
+                            }
+                            if (this.tok.toString().equals("and")) {
+                                if ((Boolean) val.getValue() == false) {
+                                    return new BooleanValue(false);
+                                }
+                            } else if (this.tok.toString().equals("or")) {
+                                if ((Boolean) val.getValue() == true) {
+                                    return new BooleanValue(true);
+                                }
+                            }
+                        }
+                        if (this.tok.toString().equals("and")) {
+                            return new BooleanValue(true);
+                        } else {
+                            return new BooleanValue(false);
+                        }
+                    }
+                } else { // comparison operators
+                    if (this.exprs.size() < 1) {
+                        throw new Exception(
+                            "RUNTIME ERROR: Incorrect arity in comparison expression."
                         );
                     }
-                    if (
-                        (this.tok.toString().equals("==") &&
-                            val1.compareTo(val2) != 0) ||
-                        (this.tok.toString().equals("!=") &&
-                            val1.compareTo(val2) == 0) ||
-                        (this.tok.toString().equals("<") &&
-                            val1.compareTo(val2) >= 0) ||
-                        (this.tok.toString().equals(">") &&
-                            val1.compareTo(val2) <= 0) ||
-                        (this.tok.toString().equals("<=") &&
-                            val1.compareTo(val2) > 0) ||
-                        (this.tok.toString().equals(">=") &&
-                            val1.compareTo(val2) < 0)
-                    ) {
-                        return new BooleanValue(false);
+                    for (int i = 0; i < this.exprs.size() - 1; i++) {
+                        DataValue val1 = this.exprs.get(i).evaluate();
+                        DataValue val2 = this.exprs.get(i + 1).evaluate();
+                        if (val1.getType() != val2.getType()) {
+                            throw new Exception(
+                                "RUNTIME ERROR: Type mismatch in comparison."
+                            );
+                        }
+                        if (
+                            (this.tok.toString().equals("==") &&
+                                val1.compareTo(val2) != 0) ||
+                            (this.tok.toString().equals("!=") &&
+                                val1.compareTo(val2) == 0) ||
+                            (this.tok.toString().equals("<") &&
+                                val1.compareTo(val2) >= 0) ||
+                            (this.tok.toString().equals(">") &&
+                                val1.compareTo(val2) <= 0) ||
+                            (this.tok.toString().equals("<=") &&
+                                val1.compareTo(val2) > 0) ||
+                            (this.tok.toString().equals(">=") &&
+                                val1.compareTo(val2) < 0)
+                        ) {
+                            return new BooleanValue(false);
+                        }
                     }
+                    return new BooleanValue(true);
                 }
-                return new BooleanValue(true);
             } else if (this.tok.getType() == Token.Type.SEQ_FUNC) {
                 if (this.exprs.size() == 0) {
                     throw new Exception(
