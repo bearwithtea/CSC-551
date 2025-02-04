@@ -4,6 +4,7 @@
  *   @version 1/20/25
  */
 public class NumberValue implements DataValue {
+
     protected Double value;
 
     /**
@@ -12,7 +13,7 @@ public class NumberValue implements DataValue {
     public NumberValue() {
         this(0);
     }
-    
+
     /**
      * Constructs a number value.
      *   @param num the number being stored
@@ -42,9 +43,9 @@ public class NumberValue implements DataValue {
      *   @return a String representation of a number value
      */
     public String toString() {
-    	if (this.value == Math.round(this.value)) {
-    		return "" + (int)(this.value.doubleValue());
-    	}
+        if (this.value == Math.round(this.value)) {
+            return "" + (int) (this.value.doubleValue());
+        }
         return "" + this.value;
     }
 
@@ -54,6 +55,6 @@ public class NumberValue implements DataValue {
      *   @return negative if <, 0 if ==, positive if >
      */
     public int compareTo(DataValue other) {
-         return ((Double)this.getValue()).compareTo((Double)other.getValue());
+        return ((Double) this.getValue()).compareTo((Double) other.getValue());
     }
 }
