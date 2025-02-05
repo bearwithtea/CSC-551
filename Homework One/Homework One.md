@@ -81,13 +81,13 @@ else
 }
 ```
 is valid, shown by the parse tree below:
-![[Pasted image 20250128142334.png | 1200]]
+![[Pasted image 20250128142334.png | 600]]
 
 ```python
 if (avg >= 80)
 {
 	if (avg >= 90)
-		print "A"
+		print "A"Å
 	else
 		print "B"
 }
