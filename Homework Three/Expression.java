@@ -43,7 +43,8 @@ public class Expression {
             this.tok.getType() != Token.Type.IDENTIFIER &&
             this.tok.getType() != Token.Type.NUM_LITERAL &&
             this.tok.getType() != Token.Type.BOOL_LITERAL &&
-            this.tok.getType() != Token.Type.CHAR_LITERAL
+            this.tok.getType() != Token.Type.CHAR_LITERAL &&
+            this.tok.getType() != Token.Type.STR_LITERAL //added string literal
         ) {
             throw new Exception(
                 "SYNTAX ERROR: Unknown value (" + this.tok + ")."
@@ -72,6 +73,9 @@ public class Expression {
                 return new BooleanValue(Boolean.valueOf(this.tok.toString()));
             } else if (this.tok.getType() == Token.Type.CHAR_LITERAL) {
                 return new CharValue(this.tok.toString().charAt(1));
+            } else if (this.tok.getType() == Token.Type.STR_LITERAL) {
+                String str = this.tok.toString(); // get the string
+                return new StringValue(str.substring(1, str.length() - 1)); // remove quotes
             }
         } else if (this.tok.toString().equals("[")) {
             ArrayList<DataValue> vals = new ArrayList<DataValue>();
@@ -198,10 +202,27 @@ public class Expression {
                         "RUNTIME ERROR: Incorrect arity in sequence expression."
                     );
                 }
-                DataValue first = this.exprs.get(0).evaluate();
-                if (first.getType() != DataValue.Type.LIST) {
-                    throw new Exception("RUNTIME ERROR: List value expected.");
+
+                if (this.tok.toString().equals("str")) {
+                    if (this.exprs.size() != 1) {
+                        throw new Exception(
+                            "RUNTIME ERROR: Incorrect arity in str expression."
+                        );
+                    }
+                    DataValue val = this.exprs.get(0).evaluate();
+                    return new StringValue(val.toString());
                 }
+
+                DataValue first = this.exprs.get(0).evaluate();
+                if (
+                    first.getType() != DataValue.Type.LIST &&
+                    first.getType() != DataValue.Type.STRING
+                ) {
+                    throw new Exception(
+                        "RUNTIME ERROR: List or String value expected."
+                    );
+                }
+
                 ArrayList<DataValue> list = (ArrayList<
                         DataValue
                     >) first.getValue();
@@ -244,16 +265,32 @@ public class Expression {
                             "RUNTIME ERROR: Incorrect arity in cat expression."
                         );
                     }
+                    boolean isString =
+                        (first.getType() == DataValue.Type.STRING);
                     for (int i = 1; i < this.exprs.size(); i++) {
                         DataValue val = this.exprs.get(i).evaluate();
-                        if (val.getType() != DataValue.Type.LIST) {
+                        if (
+                            val.getType() != DataValue.Type.LIST &&
+                            val.getType() != DataValue.Type.STRING
+                        ) {
+                            throw new Exception(
+                                "RUNTIME ERROR: Type mismatch in cat expression."
+                            );
+                        }
+                        if (
+                            (val.getType() == DataValue.Type.STRING) != isString
+                        ) {
                             throw new Exception(
                                 "RUNTIME ERROR: Type mismatch in cat expression."
                             );
                         }
                         list.addAll((ArrayList<DataValue>) val.getValue());
                     }
-                    return new ListValue(list);
+                    if (isString) {
+                        return new StringValue(list);
+                    } else {
+                        return new ListValue(list);
+                    }
                 }
             }
         }

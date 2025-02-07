@@ -1,5 +1,5 @@
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class that represents a list value.
@@ -7,13 +7,14 @@ import java.util.ArrayList;
  *   @version 1/20/25
  */
 public class ListValue implements DataValue {
+
     private List<DataValue> value;
 
     /**
      * Constructs a default list value (empty list).
      */
     public ListValue() {
-    	this.value = new ArrayList<DataValue>();
+        this.value = new ArrayList<DataValue>();
     }
 
     /**
@@ -21,19 +22,19 @@ public class ListValue implements DataValue {
      *   @param vals the list values being stored
      */
     public ListValue(ArrayList<DataValue> vals) {
-    	this();
-    	for (DataValue v : vals) {
-    		this.value.add(v);
-    	}
+        this();
+        for (DataValue v : vals) {
+            this.value.add(v);
+        }
     }
-    
+
     /**
      * Accesses the stored list value.
      *   @return the list value (as an Object)
      */
     public Object getValue() {
         return this.value;
-    }  
+    }
 
     /**
      * Identifies the actual type of the value.
@@ -48,10 +49,10 @@ public class ListValue implements DataValue {
      *   @return a String representation of the list value
      */
     public String toString() {
-    	String message = "[";
-    	for (DataValue v : this.value) {
-    		message += v + " ";
-    	}
+        String message = "[";
+        for (DataValue v : this.value) {
+            message += v + " ";
+        }
         return message.trim() + "]";
     }
 
@@ -61,6 +62,8 @@ public class ListValue implements DataValue {
      *   @return negative if <, 0 if ==, positive if >
      */
     public int compareTo(DataValue other) {
-         return (this.getValue().toString()).compareTo(other.getValue().toString());
+        return (this.getValue().toString()).compareTo(
+                other.getValue().toString()
+            );
     }
 }

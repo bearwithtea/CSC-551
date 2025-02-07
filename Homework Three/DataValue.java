@@ -9,6 +9,7 @@ public interface DataValue extends Comparable<DataValue> {
         BOOLEAN,
         LIST,
         CHAR,
+        STRING,
     }
 
     public Object getValue();
