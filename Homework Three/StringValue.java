@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,27 +15,17 @@ public class StringValue extends ListValue {
     public StringValue() {
         super(); //calls the ListValue constructor, initializes the value to an empty list
     }
-
+]
     /**
      * Constructs a string value.
      *   @param str the string being stored
      */
     public StringValue(String str) {
-        super();
+        super(new ArrayList<DataValue>(str.toCharArray())); //fix
         //for each character in the string, add a new CharValue to the list
         for (char c : str.toCharArray()) {
-            @SuppressWarnings("unchecked")
-            List<DataValue> value = (List<DataValue>) super.getValue();
             value.add(new CharValue(c));
         }
-    }
-
-    /**
-     * Constructs a string value.
-     * @param chars
-     */
-    public StringValue(ArrayList<DataValue> chars) {
-        super(chars);
     }
 
     /**
