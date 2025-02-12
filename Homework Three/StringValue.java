@@ -13,16 +13,15 @@ public class StringValue extends ListValue {
      * Constructs a default string value.
      */
     public StringValue() {
-        super(); //calls the ListValue constructor, initializes the value to an empty list
+        super(); // Calls the ListValue constructor, initializes the value to an empty list
     }
-]
     /**
      * Constructs a string value.
      *   @param str the string being stored
      */
     public StringValue(String str) {
-        super(new ArrayList<DataValue>(str.toCharArray())); //fix
-        //for each character in the string, add a new CharValue to the list
+        super(); // Initialize the list
+        // Convert each character in the string to a CharValue
         for (char c : str.toCharArray()) {
             value.add(new CharValue(c));
         }
