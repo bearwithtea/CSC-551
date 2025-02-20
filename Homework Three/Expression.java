@@ -7,8 +7,8 @@ import java.util.ArrayList;
  */
 public class Expression {
 
-    private Token tok; // used for simple expressions (no function)
-    private ArrayList<Expression> exprs; // used to store function inputs
+    private Token tok;
+    private ArrayList<Expression> exprs;
 
     /**
      * Creates an expression from the specified TokenStream.
@@ -44,7 +44,7 @@ public class Expression {
             this.tok.getType() != Token.Type.NUM_LITERAL &&
             this.tok.getType() != Token.Type.BOOL_LITERAL &&
             this.tok.getType() != Token.Type.CHAR_LITERAL &&
-            this.tok.getType() != Token.Type.STR_LITERAL //added string literal
+            this.tok.getType() != Token.Type.STR_LITERAL
         ) {
             throw new Exception(
                 "SYNTAX ERROR: Unknown value (" + this.tok + ")."
@@ -114,20 +114,20 @@ public class Expression {
                 }
                 return new NumberValue(returnVal);
             } else if (this.tok.getType() == Token.Type.BOOL_FUNC) {
-                if (this.tok.toString().equals("not")) { //if the token is not
-                    if (this.exprs.size() != 1) { //if the size of the expression is not 1
+                if (this.tok.toString().equals("not")) {
+                    if (this.exprs.size() != 1) {
                         throw new Exception(
-                            "RUNTIME ERROR: The `not` operator requires one expression." //throw an exception
+                            "RUNTIME ERROR: The `not` operator requires one expression."
                         );
-                    } else { //otherwise
-                        DataValue val = this.exprs.get(0).evaluate(); //evaluate the expression
-                        if (val.getType() != DataValue.Type.BOOLEAN) { //if the value is not a boolean
+                    } else {
+                        DataValue val = this.exprs.get(0).evaluate();
+                        if (val.getType() != DataValue.Type.BOOLEAN) {
                             throw new Exception(
-                                "RUNTIME ERROR: Boolean value expected." //throw an exception
+                                "RUNTIME ERROR: Boolean value expected."
                             );
-                        } else { //otherwise
+                        } else {
                             return new BooleanValue(
-                                !((Boolean) val.getValue()) // negate the value
+                                !((Boolean) val.getValue())
                             );
                         }
                     }
@@ -163,7 +163,7 @@ public class Expression {
                             return new BooleanValue(false);
                         }
                     }
-                } else { // comparison operators
+                } else {
                     if (this.exprs.size() < 1) {
                         throw new Exception(
                             "RUNTIME ERROR: Incorrect arity in comparison expression."
@@ -287,7 +287,8 @@ public class Expression {
                         list.addAll((ArrayList<DataValue>) val.getValue());
                     }
                     if (isString) {
-                        return new StringValue(list);
+                        String concatenatedString = convertListToString(list);
+                        return new StringValue(concatenatedString);
                     } else {
                         return new ListValue(list);
                     }
@@ -317,5 +318,18 @@ public class Expression {
             }
             return message + ")";
         }
+    }
+
+    /**
+     * Helper method to convert an ArrayList<DataValue> into a concatenated string.
+     *   @param list the list of DataValue objects
+     *   @return the concatenated string representation
+     */
+    private String convertListToString(ArrayList<DataValue> list) {
+        StringBuilder sb = new StringBuilder();
+        for (DataValue val : list) {
+            sb.append(val.toString());
+        }
+        return sb.toString();
     }
 }

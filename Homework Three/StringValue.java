@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,18 +12,28 @@ public class StringValue extends ListValue {
      * Constructs a default string value.
      */
     public StringValue() {
-        super(); // Calls the ListValue constructor, initializes the value to an empty list
+        super(); //calls the ListValue constructor, initializes the value to an empty list
     }
+
     /**
      * Constructs a string value.
      *   @param str the string being stored
      */
     public StringValue(String str) {
-        super(); // Initialize the list
-        // Convert each character in the string to a CharValue
+        super(createCharValueList(str));
+    }
+
+    /**
+     * Helper method to convert a string into a list of CharValue objects.
+     *  @param str the string being converted
+     *  @return a list of CharValue objects representing the characters in the string
+     */
+    private static ArrayList<DataValue> createCharValueList(String str) {
+        ArrayList<DataValue> charValues = new ArrayList<>();
         for (char c : str.toCharArray()) {
-            value.add(new CharValue(c));
+            charValues.add(new CharValue(c));
         }
+        return charValues;
     }
 
     /**
@@ -33,7 +42,7 @@ public class StringValue extends ListValue {
      */
     @Override
     public DataValue.Type getType() {
-        return DataValue.Type.STRING; //returns the type of the value
+        return DataValue.Type.STRING;
     }
 
     /**
@@ -43,10 +52,9 @@ public class StringValue extends ListValue {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        @SuppressWarnings("unchecked") //not fixing all that
         List<DataValue> value = (List<DataValue>) super.getValue();
         for (DataValue v : value) {
-            result.append(v.toString()); //appends the string representation of each character in the list
+            result.append(v.toString());
         }
         return result.toString();
     }

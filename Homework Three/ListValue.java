@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class ListValue implements DataValue {
 
-    private List<DataValue> value;
+    protected List<DataValue> value;
 
     /**
      * Constructs a default list value (empty list).
@@ -51,7 +51,13 @@ public class ListValue implements DataValue {
     public String toString() {
         String message = "[";
         for (DataValue v : this.value) {
-            message += v + " ";
+            if (v.getType() == DataValue.Type.STRING) {
+                message += "\"" + v + "\" ";
+            } else if (v.getType() == DataValue.Type.CHAR) {
+                message += "'" + v + "' ";
+            } else {
+                message += v + " ";
+            }
         }
         return message.trim() + "]";
     }
