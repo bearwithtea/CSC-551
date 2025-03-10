@@ -13,8 +13,9 @@ public class Repeat extends Statement {
      *   @param input the stream to be read from
      */
     public Repeat(TokenStream input) throws Exception {
+        // No super() needed since Statement is abstract with no constructor
         if (!input.next().toString().equals("repeat")) {
-            throw new Exception("SYNTAX ERROR: Malformed repeat statement");
+            throw new Exception("SYNTAX ERROR: Malnourished repeat statement");
         }
         this.expr = new Expression(input);
         this.body = new Compound(input);

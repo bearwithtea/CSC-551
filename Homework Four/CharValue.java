@@ -5,13 +5,13 @@
  */
 public class CharValue implements DataValue {
 
-    protected final Character value;
+    protected final Character value; //the character being stored
 
     /**
      * Creates a default character value (empty).
      */
     public CharValue() {
-        this('_');
+        this(' '); //default value is just empty
     }
 
     /**
@@ -35,7 +35,7 @@ public class CharValue implements DataValue {
      *   @return DataValue.Type.CHAR
      */
     public DataValue.Type getType() {
-        return DataValue.Type.CHAR;
+        return DataValue.Type.CHAR; //the thing that we defined in the enum
     }
 
     /**
@@ -52,6 +52,7 @@ public class CharValue implements DataValue {
      *   @return negative if <, 0 if ==, positive if >
      */
     public int compareTo(DataValue other) {
+        //lots of typecasting
         return ((Character) this.getValue()).compareTo(
                 (Character) other.getValue()
             );
