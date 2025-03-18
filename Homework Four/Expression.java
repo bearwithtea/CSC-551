@@ -278,29 +278,42 @@ public class Expression {
                             parameters.size() + " parameters, got " + this.exprs.size());
                 }
 
-                // isolate the function's scope
+                System.out.println("DEBUG: Evaluating function " + this.tok);
+
+                // Create a new scope for the function
                 Interpreter.MEMORY.beginNestedScope();
 
-                for (int i = 0; i < parameters.size(); i++) {
+                // Evaluate all arguments BEFORE storing them
+                ArrayList<DataValue> evaluatedArgs = new ArrayList<>();
+                for (int i = 0; i < this.exprs.size(); i++) {
                     DataValue argValue = this.exprs.get(i).evaluate();
-                    Interpreter.MEMORY.declareVariable(parameters.get(i));
-                    Interpreter.MEMORY.storeValue(parameters.get(i), argValue);
+                    evaluatedArgs.add(argValue);
+                    System.out.println("  Parameter " + parameters.get(i) + " = " + this.exprs.get(i) +
+                            " evaluates to " + argValue);
                 }
 
+                // Store the evaluated arguments as parameters
+                for (int i = 0; i < parameters.size(); i++) {
+                    Interpreter.MEMORY.declareVariable(parameters.get(i));
+                    Interpreter.MEMORY.storeValue(parameters.get(i), evaluatedArgs.get(i));
+                }
+
+                // Default return value is true
                 DataValue returnValue = new BooleanValue(true);
 
                 try {
                     function.getBody().execute();
-                    // Check if a return value was set
-                    if (Interpreter.MEMORY.isDeclared(Return.RETURN_VALUE_TOKEN)) {
-                        returnValue = Interpreter.MEMORY.lookupValue(Return.RETURN_VALUE_TOKEN);
-                    }
+                } catch (Return.ReturnException re) {
+                    returnValue = re.getReturnValue();
+                    System.out.println("DEBUG: Return value from " + this.tok + ": " + returnValue);
                 } catch (Exception e) {
                     Interpreter.MEMORY.endCurrentScope();
                     throw e;
                 }
 
                 Interpreter.MEMORY.endCurrentScope();
+                System.out.println("DEBUG: Function " + this.tok + " called with parameters: " + this.exprs +
+                        " returning: " + returnValue);
                 return returnValue;
             }
         }
