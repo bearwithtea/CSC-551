@@ -2,8 +2,9 @@ import java.util.ArrayList;
 
 /**
  * Class that represents an expression in the SILLY language.
- *   @author Dave Reed
- *   @version 1/20/25
+ * 
+ * @author Dave Reed
+ * @version 1/20/25
  */
 public class Expression {
 
@@ -12,20 +13,18 @@ public class Expression {
 
     /**
      * Creates an expression from the specified TokenStream.
-     *   @param input the TokenStream from which the program is read
+     * 
+     * @param input the TokenStream from which the program is read
      */
     public Expression(TokenStream input) throws Exception {
         this.tok = input.next();
         if (this.tok.toString().equals("(")) {
-            if (
-                input.lookAhead().getType() != Token.Type.IDENTIFIER &&
-                input.lookAhead().getType() != Token.Type.MATH_FUNC &&
-                input.lookAhead().getType() != Token.Type.BOOL_FUNC &&
-                input.lookAhead().getType() != Token.Type.SEQ_FUNC
-            ) {
+            if (input.lookAhead().getType() != Token.Type.IDENTIFIER &&
+                    input.lookAhead().getType() != Token.Type.MATH_FUNC &&
+                    input.lookAhead().getType() != Token.Type.BOOL_FUNC &&
+                    input.lookAhead().getType() != Token.Type.SEQ_FUNC) {
                 throw new Exception(
-                    "SYNTAX ERROR: Identifier or function expected in expression."
-                );
+                        "SYNTAX ERROR: Identifier or function expected in expression.");
             }
             this.tok = input.next();
             this.exprs = new ArrayList<Expression>();
@@ -39,32 +38,29 @@ public class Expression {
                 this.exprs.add(new Expression(input));
             }
             input.next();
-        } else if (
-            this.tok.getType() != Token.Type.IDENTIFIER &&
-            this.tok.getType() != Token.Type.NUM_LITERAL &&
-            this.tok.getType() != Token.Type.BOOL_LITERAL &&
-            this.tok.getType() != Token.Type.CHAR_LITERAL &&
-            this.tok.getType() != Token.Type.STR_LITERAL
-        ) {
+        } else if (this.tok.getType() != Token.Type.IDENTIFIER &&
+                this.tok.getType() != Token.Type.NUM_LITERAL &&
+                this.tok.getType() != Token.Type.BOOL_LITERAL &&
+                this.tok.getType() != Token.Type.CHAR_LITERAL &&
+                this.tok.getType() != Token.Type.STR_LITERAL) {
             throw new Exception(
-                "SYNTAX ERROR: Unknown value (" + this.tok + ")."
-            );
+                    "SYNTAX ERROR: Unknown value (" + this.tok + ").");
         }
     }
 
     /**
      * Evaluates the current expression.
-     *   @return the value represented by the expression
+     * 
+     * @return the value represented by the expression
      */
     public DataValue evaluate() throws Exception {
         if (this.exprs == null) {
             if (this.tok.getType() == Token.Type.IDENTIFIER) {
                 if (!Interpreter.MEMORY.isDeclared(this.tok)) {
                     throw new Exception(
-                        "RUNTIME ERROR: variable " +
-                        this.tok +
-                        " is undeclared."
-                    );
+                            "RUNTIME ERROR: variable " +
+                                    this.tok +
+                                    " is undeclared.");
                 }
                 return Interpreter.MEMORY.lookupValue(this.tok);
             } else if (this.tok.getType() == Token.Type.NUM_LITERAL) {
@@ -87,22 +83,19 @@ public class Expression {
             if (this.tok.getType() == Token.Type.MATH_FUNC) {
                 if (this.exprs.size() < 2) {
                     throw new Exception(
-                        "RUNTIME ERROR: Incorrect arity in math expression."
-                    );
+                            "RUNTIME ERROR: Incorrect arity in math expression.");
                 }
                 DataValue first = this.exprs.get(0).evaluate();
                 if (first.getType() != DataValue.Type.NUMBER) {
                     throw new Exception(
-                        "RUNTIME ERROR: Number value expected."
-                    );
+                            "RUNTIME ERROR: Number value expected.");
                 }
                 Double returnVal = (Double) first.getValue();
                 for (int i = 1; i < this.exprs.size(); i++) {
                     DataValue val = this.exprs.get(i).evaluate();
                     if (val.getType() != DataValue.Type.NUMBER) {
                         throw new Exception(
-                            "RUNTIME ERROR: Number value expected."
-                        );
+                                "RUNTIME ERROR: Number value expected.");
                     }
                     if (this.tok.toString().equals("+")) {
                         returnVal = returnVal + ((Double) val.getValue());
@@ -117,35 +110,28 @@ public class Expression {
                 if (this.tok.toString().equals("not")) {
                     if (this.exprs.size() != 1) {
                         throw new Exception(
-                            "RUNTIME ERROR: The `not` operator requires one expression."
-                        );
+                                "RUNTIME ERROR: The `not` operator requires one expression.");
                     } else {
                         DataValue val = this.exprs.get(0).evaluate();
                         if (val.getType() != DataValue.Type.BOOLEAN) {
                             throw new Exception(
-                                "RUNTIME ERROR: Boolean value expected."
-                            );
+                                    "RUNTIME ERROR: Boolean value expected.");
                         } else {
                             return new BooleanValue(
-                                !((Boolean) val.getValue())
-                            );
+                                    !((Boolean) val.getValue()));
                         }
                     }
-                } else if (
-                    this.tok.toString().equals("and") ||
-                    this.tok.toString().equals("or")
-                ) {
+                } else if (this.tok.toString().equals("and") ||
+                        this.tok.toString().equals("or")) {
                     if (this.exprs.size() < 2) {
                         throw new Exception(
-                            "RUNTIME ERROR: The number of arguments in an `and` or `or` expression must be greater than or equal to two."
-                        );
+                                "RUNTIME ERROR: The number of arguments in an `and` or `or` expression must be greater than or equal to two.");
                     } else {
                         for (int i = 0; i < this.exprs.size(); i++) {
                             DataValue val = this.exprs.get(i).evaluate();
                             if (val.getType() != DataValue.Type.BOOLEAN) {
                                 throw new Exception(
-                                    "RUNTIME ERROR: Boolean value expected."
-                                );
+                                        "RUNTIME ERROR: Boolean value expected.");
                             }
                             if (this.tok.toString().equals("and")) {
                                 if ((Boolean) val.getValue() == false) {
@@ -166,31 +152,31 @@ public class Expression {
                 } else {
                     if (this.exprs.size() < 1) {
                         throw new Exception(
-                            "RUNTIME ERROR: Incorrect arity in comparison expression."
-                        );
+                                "RUNTIME ERROR: Incorrect arity in comparison expression.");
                     }
                     for (int i = 0; i < this.exprs.size() - 1; i++) {
                         DataValue val1 = this.exprs.get(i).evaluate();
                         DataValue val2 = this.exprs.get(i + 1).evaluate();
                         if (val1.getType() != val2.getType()) {
                             throw new Exception(
-                                "RUNTIME ERROR: Type mismatch in comparison."
-                            );
+                                    "RUNTIME ERROR: Type mismatch in comparison.");
                         }
-                        if (
-                            (this.tok.toString().equals("==") &&
+                        if ((this.tok.toString().equals("==") &&
                                 val1.compareTo(val2) != 0) ||
-                            (this.tok.toString().equals("!=") &&
-                                val1.compareTo(val2) == 0) ||
-                            (this.tok.toString().equals("<") &&
-                                val1.compareTo(val2) >= 0) ||
-                            (this.tok.toString().equals(">") &&
-                                val1.compareTo(val2) <= 0) ||
-                            (this.tok.toString().equals("<=") &&
-                                val1.compareTo(val2) > 0) ||
-                            (this.tok.toString().equals(">=") &&
-                                val1.compareTo(val2) < 0)
-                        ) {
+                                (this.tok.toString().equals("!=") &&
+                                        val1.compareTo(val2) == 0)
+                                ||
+                                (this.tok.toString().equals("<") &&
+                                        val1.compareTo(val2) >= 0)
+                                ||
+                                (this.tok.toString().equals(">") &&
+                                        val1.compareTo(val2) <= 0)
+                                ||
+                                (this.tok.toString().equals("<=") &&
+                                        val1.compareTo(val2) > 0)
+                                ||
+                                (this.tok.toString().equals(">=") &&
+                                        val1.compareTo(val2) < 0)) {
                             return new BooleanValue(false);
                         }
                     }
@@ -199,90 +185,70 @@ public class Expression {
             } else if (this.tok.getType() == Token.Type.SEQ_FUNC) {
                 if (this.exprs.size() == 0) {
                     throw new Exception(
-                        "RUNTIME ERROR: Incorrect arity in sequence expression."
-                    );
+                            "RUNTIME ERROR: Incorrect arity in sequence expression.");
                 }
 
                 if (this.tok.toString().equals("str")) {
                     if (this.exprs.size() != 1) {
                         throw new Exception(
-                            "RUNTIME ERROR: Incorrect arity in str expression."
-                        );
+                                "RUNTIME ERROR: Incorrect arity in str expression.");
                     }
                     DataValue val = this.exprs.get(0).evaluate();
                     return new StringValue(val.toString());
                 }
 
                 DataValue first = this.exprs.get(0).evaluate();
-                if (
-                    first.getType() != DataValue.Type.LIST &&
-                    first.getType() != DataValue.Type.STRING
-                ) {
+                if (first.getType() != DataValue.Type.LIST &&
+                        first.getType() != DataValue.Type.STRING) {
                     throw new Exception(
-                        "RUNTIME ERROR: List or String value expected."
-                    );
+                            "RUNTIME ERROR: List or String value expected.");
                 }
 
-                ArrayList<DataValue> list = (ArrayList<
-                        DataValue
-                    >) first.getValue();
+                ArrayList<DataValue> list = (ArrayList<DataValue>) first.getValue();
 
                 if (this.tok.toString().equals("len")) {
                     if (this.exprs.size() != 1) {
                         throw new Exception(
-                            "RUNTIME ERROR: Incorrect arity in len expression."
-                        );
+                                "RUNTIME ERROR: Incorrect arity in len expression.");
                     }
                     return new NumberValue(list.size());
                 } else if (this.tok.toString().equals("get")) {
                     if (this.exprs.size() != 2) {
                         throw new Exception(
-                            "RUNTIME ERROR: Incorrect arity in get expression."
-                        );
+                                "RUNTIME ERROR: Incorrect arity in get expression.");
                     }
                     DataValue second = this.exprs.get(1).evaluate();
                     if (second.getType() != DataValue.Type.NUMBER) {
                         throw new Exception(
-                            "RUNTIME ERROR: Number expected in get expression."
-                        );
+                                "RUNTIME ERROR: Number expected in get expression.");
                     }
                     double dub = (Double) second.getValue();
                     if (dub != Math.round(dub)) {
                         throw new Exception(
-                            "RUNTIME ERROR: List index must be an integer."
-                        );
+                                "RUNTIME ERROR: List index must be an integer.");
                     }
                     int index = (int) dub;
                     if (index < 0 || index >= list.size()) {
                         throw new Exception(
-                            "RUNTIME ERROR: List index out of bounds."
-                        );
+                                "RUNTIME ERROR: List index out of bounds.");
                     }
                     return list.get(index);
                 } else if (this.tok.toString().equals("cat")) {
                     if (this.exprs.size() < 2) {
                         throw new Exception(
-                            "RUNTIME ERROR: Incorrect arity in cat expression."
-                        );
+                                "RUNTIME ERROR: Incorrect arity in cat expression.");
                     }
-                    boolean isString =
-                        (first.getType() == DataValue.Type.STRING);
+                    boolean isString = (first.getType() == DataValue.Type.STRING);
                     for (int i = 1; i < this.exprs.size(); i++) {
                         DataValue val = this.exprs.get(i).evaluate();
-                        if (
-                            val.getType() != DataValue.Type.LIST &&
-                            val.getType() != DataValue.Type.STRING
-                        ) {
+                        if (val.getType() != DataValue.Type.LIST &&
+                                val.getType() != DataValue.Type.STRING) {
                             throw new Exception(
-                                "RUNTIME ERROR: Type mismatch in cat expression."
-                            );
+                                    "RUNTIME ERROR: Type mismatch in cat expression.");
                         }
-                        if (
-                            (val.getType() == DataValue.Type.STRING) != isString
-                        ) {
+                        if ((val.getType() == DataValue.Type.STRING) != isString) {
                             throw new Exception(
-                                "RUNTIME ERROR: Type mismatch in cat expression."
-                            );
+                                    "RUNTIME ERROR: Type mismatch in cat expression.");
                         }
                         list.addAll((ArrayList<DataValue>) val.getValue());
                     }
@@ -293,6 +259,49 @@ public class Expression {
                         return new ListValue(list);
                     }
                 }
+            } else if (this.tok.getType() == Token.Type.IDENTIFIER) {
+                if (!Interpreter.MEMORY.isDeclared(this.tok)) {
+                    throw new Exception("RUNTIME ERROR: Function '" + this.tok + "' is not declared");
+                }
+
+                // Get the function declaration from the memory
+                Statement stmt = Interpreter.getFunction(this.tok.toString());
+                if (!(stmt instanceof FunctionDecl)) {
+                    throw new Exception("RUNTIME ERROR: '" + this.tok + "' is not a function");
+                }
+
+                FunctionDecl function = (FunctionDecl) stmt;
+                ArrayList<Token> parameters = function.getParameters();
+
+                if (parameters.size() != this.exprs.size()) {
+                    throw new Exception("RUNTIME ERROR: Function '" + this.tok + "' expects " +
+                            parameters.size() + " parameters, got " + this.exprs.size());
+                }
+
+                // isolate the function's scope
+                Interpreter.MEMORY.beginNestedScope();
+
+                for (int i = 0; i < parameters.size(); i++) {
+                    DataValue argValue = this.exprs.get(i).evaluate();
+                    Interpreter.MEMORY.declareVariable(parameters.get(i));
+                    Interpreter.MEMORY.storeValue(parameters.get(i), argValue);
+                }
+
+                DataValue returnValue = new BooleanValue(true);
+
+                try {
+                    function.getBody().execute();
+                    // Check if a return value was set
+                    if (Interpreter.MEMORY.isDeclared(Return.RETURN_VALUE_TOKEN)) {
+                        returnValue = Interpreter.MEMORY.lookupValue(Return.RETURN_VALUE_TOKEN);
+                    }
+                } catch (Exception e) {
+                    Interpreter.MEMORY.endCurrentScope();
+                    throw e;
+                }
+
+                Interpreter.MEMORY.endCurrentScope();
+                return returnValue;
             }
         }
         throw new Exception("RUNTIME ERROR: Unknown expression format.");
@@ -300,7 +309,8 @@ public class Expression {
 
     /**
      * Converts the current expression into a String.
-     *   @return the String representation of this expression
+     * 
+     * @return the String representation of this expression
      */
     public String toString() {
         if (this.exprs == null) {
@@ -322,8 +332,9 @@ public class Expression {
 
     /**
      * Helper method to convert an ArrayList<DataValue> into a concatenated string.
-     *   @param list the list of DataValue objects
-     *   @return the concatenated string representation
+     * 
+     * @param list the list of DataValue objects
+     * @return the concatenated string representation
      */
     private String convertListToString(ArrayList<DataValue> list) {
         StringBuilder sb = new StringBuilder();

@@ -1,0 +1,115 @@
+
+HW4: Implementing Functions
+
+The final extension to your SILLY interpreter is to add functions and return statements to the language. You will need to define two new classes, a FunctionDecl class for declaring a function and a Return class for returning a value. The grammar rules for these new statements are:
+
+    <func>    --> 'func' <id> '(' { <id> } ')' <compound>
+    
+    <return>  --> 'return' <expr>
+
+A function declaration specifies the name of the function, an arbitrary number of parameters in parentheses, and a compound statement specifying the body of the function. It is important to recognize that executing a function declaration does NOT result in its code being executed - it simply stores the parameters and compound statement in memory so that it can be called later. Executing a function declaration when there already exists a variable or function with that same name should result in a run-time error.
+
+A function call is a parenthesized expression with the function name followed by expressions that correspond to the parameters. When a function call is evaluated, the corresponding parameters and compound statement must be retrieved from memory and executed in a new, independent scope. The parameters are treated as local variables in that scope, initialized with the values specified in the function call. Because a function's scope is independent, statements within a function cannot access variables outside that function. Evaluating a function call should result in a run-time error if there is no declared function with that name or if the number of expressions does not match the number of parameters.
+
+Return statements can appear in functions. When a return statement is executed, the current function call terminates with the value specified in the return statement. If a function call ends without encountering a return statement, the default value true should be returned.
+
+    SAMPLE CODE (output in red)
+
+    >>> func foo() {
+            print "foo"
+        }
+    >>> x = (foo)
+    foo
+    >>> print x
+    true
+    >>> func many(word n) {
+            repeat n {
+                print word
+            }
+        }
+    >>> x = (many "bar" 3)
+    bar
+    bar
+    bar
+    >>> x = (many "abcd" (/ 16 4 2))
+    abcd
+    abcd
+    >>> func last(seq) {
+            return (get seq (+ (len seq) -1))
+        }
+    >>> print (last "abcd")
+    d 
+    >>> print (last [1 2 3 4])
+    4   
+    >>> print (cat "last=" (str (last [1 2 3 4])))
+    4 
+    >>> func square(p) {
+            q = (* p p)
+            return q
+        }
+    >>> p = 3
+    >>> q = 4
+    >>> print (square 9)
+    81 
+    >>> print p
+    3  
+    >>> print q
+    4 
+    >>> print (+ (square 1) (square 2) (square 3)
+    14 
+
+    	
+
+    >>> func test(n1 n2) {
+            if (== n1 n2) {
+                return n1
+            } else {
+                if (> n1 n2) {
+                    return (+ n1 (* n2 -1))
+                }
+                else { } 
+            }
+        }
+    >>> print (test 5 5)
+    5 
+    >>> print (test 10 8)
+    2
+    >>> print (test 10 18)
+    true 
+    >>> func stamp(word times) {
+            final = "" 
+            repeat times {
+                final = (cat final word)
+            }
+            return final
+        }
+    >>> print (stamp (cat "foo" "d") (+ 2 1))
+    foodfoodfood 
+    >>> func sumRange(low high) {
+            if (> low high) {
+                return (sumRange high low)
+            }
+            else {
+                if (== low high) {
+                    return low
+                }
+                else {
+                    return (+ low (sumRange (+ low 1) high))
+                }
+            }
+        }
+    >>> print (sumRange 1 10)
+    55
+    >>> print (+ (sumRange 1 5) (sumRange 6 10))
+    55
+    >>> print (sumRange 10 1)
+    55
+
+This assignment is more complex than the previous two, requiring the creation and modification of multiple classes. It is strongly recommended that you complete this assignment in stages:
+
+STAGE 1: No parameters & no returns. (60%)
+    Define the FunctionDecl class that reads in a function declaration with no parameters and no return statements. You will need to modify the MemorySpace class so that the compound statement is stored when the function declaration is executed. You will also need to revise the Expression class to evaluate a function call. This will involve accessing the compound statement from memory, creating a new scope for the function, and executing the compound statement. Since you are ignoring return statements for now, a function call should simply return true.
+STAGE 2: Add parameters. (20%)
+    Next, modify your classes to handle parameters. FunctionDecl should read and store the parameters along with the compound statement. Evaluating a function call will require evaluating the input expressions and assigning those to local variables (the parameters) prior to executing the compound statement. 
+STAGE 3: Implement return statements. (20%)
+    Finally, define the Return class that implements a return statement. When executed, a return statement terminates its function call with the specified return value. There are multiple ways you could approach this task. One is to have a special, reserved variable stored in the function's scope record for storing the return value. When a return statement is executed, its value will be stored in that variable which will also trigger the termination of the compound statement. 

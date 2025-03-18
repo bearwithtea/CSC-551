@@ -2,8 +2,9 @@ import java.util.ArrayList;
 
 /**
  * Derived class that represents a compound statement in the SILLY language.
- *   @author Dave Reed
- *   @version 1/20/25
+ *
+ * @author Dave Reed
+ * @version 1/20/25
  */
 public class Compound extends Statement {
 
@@ -11,7 +12,8 @@ public class Compound extends Statement {
 
     /**
      * Reads in a compound statement from the specified stream
-     *   @param input the stream to be read from
+     *
+     * @param input the stream to be read from
      */
     public Compound(TokenStream input) throws Exception {
         if (!input.next().toString().equals("{")) {
@@ -30,15 +32,21 @@ public class Compound extends Statement {
      */
     public void execute() throws Exception {
         Interpreter.MEMORY.beginNestedScope();
-        for (Statement stmt : this.stmts) {
-            stmt.execute();
+        try {
+            for (Statement stmt : this.stmts) {
+                stmt.execute();
+            }
+        } catch (Exception e) {
+            Interpreter.MEMORY.endCurrentScope();
+            throw e;
         }
         Interpreter.MEMORY.endCurrentScope();
     }
 
     /**
      * Converts the current compound statement into a String.
-     *   @return the String representation of this statement
+     *
+     * @return the String representation of this statement
      */
     public String toString() {
         String str = "{\n";

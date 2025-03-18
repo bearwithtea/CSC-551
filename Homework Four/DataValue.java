@@ -1,7 +1,8 @@
 /**
  * Interface that defines the data types for the SILLY language.
- *   @author Dave Reed
- *   @version 1/20/25
+ * 
+ * @author Dave Reed
+ * @version 1/20/25
  */
 public interface DataValue extends Comparable<DataValue> {
     public static enum Type {
@@ -10,6 +11,7 @@ public interface DataValue extends Comparable<DataValue> {
         LIST,
         CHAR,
         STRING,
+        FUNCTION,
     }
 
     public Object getValue();
