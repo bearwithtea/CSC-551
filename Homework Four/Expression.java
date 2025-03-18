@@ -277,7 +277,7 @@ public class Expression {
                             parameters.size() + " parameters, got " + this.exprs.size());
                 }
 
-                System.out.println("DEBUG: Evaluating function " + this.tok);
+                // System.out.println("DEBUG: Evaluating function " + this.tok);
 
                 Interpreter.MEMORY.beginNestedScope();
 
@@ -285,8 +285,9 @@ public class Expression {
                 for (int i = 0; i < this.exprs.size(); i++) {
                     DataValue argValue = this.exprs.get(i).evaluate();
                     evaluatedArgs.add(argValue);
-                    System.out.println("  Parameter " + parameters.get(i) + " = " + this.exprs.get(i) +
-                            " evaluates to " + argValue);
+                    // System.out.println(" Parameter " + parameters.get(i) + " = " +
+                    // this.exprs.get(i) +
+                    // " evaluates to " + argValue);
                 }
 
                 for (int i = 0; i < parameters.size(); i++) {
@@ -300,15 +301,17 @@ public class Expression {
                     function.getBody().execute();
                 } catch (Return.ReturnException re) {
                     returnValue = re.getReturnValue();
-                    System.out.println("DEBUG: Return value from " + this.tok + ": " + returnValue);
+                    // System.out.println("DEBUG: Return value from " + this.tok + ": " +
+                    // returnValue);
                 } catch (Exception e) {
                     Interpreter.MEMORY.endCurrentScope();
                     throw e;
                 }
 
                 Interpreter.MEMORY.endCurrentScope();
-                System.out.println("DEBUG: Function " + this.tok + " called with parameters: " + this.exprs +
-                        " returning: " + returnValue);
+                // System.out.println("DEBUG: Function " + this.tok + " called with parameters:
+                // " + this.exprs +
+                // " returning: " + returnValue);
                 return returnValue;
             }
         }
