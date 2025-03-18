@@ -33,6 +33,7 @@ public class Compound extends Statement {
      */
     public void execute() throws Exception {
         Interpreter.MEMORY.beginNestedScope();
+
         try {
             for (Statement stmt : this.stmts) {
                 stmt.execute();
@@ -44,6 +45,8 @@ public class Compound extends Statement {
             Interpreter.MEMORY.endCurrentScope();
             throw e;
         }
+
+        // End the scope when done
         Interpreter.MEMORY.endCurrentScope();
     }
 

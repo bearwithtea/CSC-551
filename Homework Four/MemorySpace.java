@@ -56,12 +56,33 @@ public class MemorySpace {
 
     /**
      * Stores a variable/value in the runtime stack.
+     * If the variable doesn't exist in any scope, it's declared in the current
+     * scope.
+     * If the variable exists in the current scope, it's updated there.
+     * If the variable only exists in a parent scope, a new one is created in the
+     * current scope.
      *
      * @param variable the variable name
      * @param val      the value to be stored under that name
      */
     public void storeValue(Token variable, DataValue val) {
-        this.findScopeinStack(variable).storeInScope(variable, val);
+        ScopeRec currentScope = this.runtimeStack.peek();
+
+        // If variable is already in the current scope, just update it
+        if (currentScope.declaredInScope(variable)) {
+            currentScope.storeInScope(variable, val);
+        }
+        // If variable doesn't exist in ANY scope, declare it in current scope
+        else if (findScopeinStack(variable) == null) {
+            declareVariable(variable);
+            currentScope.storeInScope(variable, val);
+        }
+        // If variable exists in a parent scope, create a new one in current scope
+        else {
+            // Create a new local variable that shadows the one in parent scope
+            declareVariable(variable);
+            currentScope.storeInScope(variable, val);
+        }
     }
 
     /**
