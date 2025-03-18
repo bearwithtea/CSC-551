@@ -9,8 +9,9 @@ import java.util.Map;
  * @version 1/20/25
  */
 public class MemorySpace {
-    private Stack<ScopeRec> runtimeStack;
-    private Map<String, FunctionDecl> functionMap;
+    private Stack<ScopeRec> runtimeStack; // represents the nested scopes
+    private Map<String, FunctionDecl> functionMap; // create a map that stores the name of the function and the function
+                                                   // declaration
 
     /**
      * Constructs a memory space with a single (global) scope record.
@@ -25,14 +26,14 @@ public class MemorySpace {
      * Adds a new scope to the top of the runtime stack (linked to previous top).
      */
     public void beginNestedScope() {
-        this.runtimeStack.push(new ScopeRec(this.runtimeStack.peek()));
+        this.runtimeStack.push(new ScopeRec(this.runtimeStack.peek())); // adds a new scope to the stack
     }
 
     /**
      * Removes the current scope from the top of the runtime stack.
      */
     public void endCurrentScope() {
-        this.runtimeStack.pop();
+        this.runtimeStack.pop(); // pops the current scope off the stack
     }
 
     /**
@@ -56,11 +57,6 @@ public class MemorySpace {
 
     /**
      * Stores a variable/value in the runtime stack.
-     * If the variable doesn't exist in any scope, it's declared in the current
-     * scope.
-     * If the variable exists in the current scope, it's updated there.
-     * If the variable only exists in a parent scope, a new one is created in the
-     * current scope.
      *
      * @param variable the variable name
      * @param val      the value to be stored under that name
@@ -68,18 +64,12 @@ public class MemorySpace {
     public void storeValue(Token variable, DataValue val) {
         ScopeRec currentScope = this.runtimeStack.peek();
 
-        // If variable is already in the current scope, just update it
         if (currentScope.declaredInScope(variable)) {
             currentScope.storeInScope(variable, val);
-        }
-        // If variable doesn't exist in ANY scope, declare it in current scope
-        else if (findScopeinStack(variable) == null) {
+        } else if (findScopeinStack(variable) == null) {
             declareVariable(variable);
             currentScope.storeInScope(variable, val);
-        }
-        // If variable exists in a parent scope, create a new one in current scope
-        else {
-            // Create a new local variable that shadows the one in parent scope
+        } else {
             declareVariable(variable);
             currentScope.storeInScope(variable, val);
         }
