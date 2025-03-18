@@ -29,6 +29,7 @@ public class Compound extends Statement {
 
     /**
      * Executes the current compound statement.
+     * Now properly handles return statements by propagating the ReturnException.
      */
     public void execute() throws Exception {
         Interpreter.MEMORY.beginNestedScope();
@@ -36,6 +37,9 @@ public class Compound extends Statement {
             for (Statement stmt : this.stmts) {
                 stmt.execute();
             }
+        } catch (Return.ReturnException re) {
+            Interpreter.MEMORY.endCurrentScope();
+            throw re;
         } catch (Exception e) {
             Interpreter.MEMORY.endCurrentScope();
             throw e;

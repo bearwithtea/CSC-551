@@ -7,7 +7,20 @@
 public class Return extends Statement {
 
     private Expression expr;
-    public static final Token RETURN_VALUE_TOKEN = new Token("__return__"); // escape token
+    public static final Token RETURN_VALUE_TOKEN = new Token("__return__");
+
+    public static class ReturnException extends Exception {
+        private final DataValue returnValue;
+
+        public ReturnException(DataValue value) {
+            super("RETURN");
+            this.returnValue = value;
+        }
+
+        public DataValue getReturnValue() {
+            return returnValue;
+        }
+    }
 
     /**
      * Reads in a return statement from the specified stream
@@ -23,13 +36,13 @@ public class Return extends Statement {
 
     /**
      * Executes the current return statement.
+     * Throws a ReturnException to signal early termination of the function.
      */
     @Override
     public void execute() throws Exception {
         DataValue value = this.expr.evaluate();
-
-        if (Interpreter.MEMORY.isDeclared(RETURN_VALUE_TOKEN))
-            Interpreter.MEMORY.storeValue(RETURN_VALUE_TOKEN, value);
+        // Throw special exception to signal return and pass the value
+        throw new ReturnException(value);
     }
 
     /**
