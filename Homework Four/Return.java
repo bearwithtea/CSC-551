@@ -40,8 +40,9 @@ public class Return extends Statement {
      */
     @Override
     public void execute() throws Exception {
+        System.out.println("DEBUG: Return statement executing");
         DataValue value = this.expr.evaluate();
-        // Throw special exception to signal return and pass the value
+        System.out.println("DEBUG: Return value evaluated: " + value);
         throw new ReturnException(value);
     }
 

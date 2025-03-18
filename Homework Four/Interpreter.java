@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
  * Driver for the interactive SILLY Interpreter.
@@ -8,6 +9,7 @@ import java.util.Scanner;
  * @version 1/20/25
  */
 public class Interpreter {
+    private static final Logger logger = Logger.getLogger(Interpreter.class.getName());
 
     public static MemorySpace MEMORY = new MemorySpace();
     private static HashMap<String, FunctionDecl> functions = new HashMap<>();
@@ -19,6 +21,7 @@ public class Interpreter {
      * @param function The function declaration
      */
     public static void registerFunction(String name, FunctionDecl function) {
+        logger.fine("Registering function: " + name);
         functions.put(name, function);
     }
 
@@ -33,6 +36,10 @@ public class Interpreter {
     }
 
     public static void main(String[] args) throws Exception {
+        // Configure logging
+        LoggerSetup.configureLogging();
+        logger.info("SILLY Interpreter starting");
+
         System.out.print(
                 "Enter the program file name or hit RETURN for interactive: ");
         Scanner input = new Scanner(System.in);
@@ -40,7 +47,10 @@ public class Interpreter {
 
         TokenStream inStream = new TokenStream();
         if (!response.equals("")) {
+            logger.info("Loading program from file: " + response);
             inStream = new TokenStream(response);
+        } else {
+            logger.info("Starting interactive mode");
         }
 
         while (response.equals("") || inStream.hasNext()) {
@@ -52,11 +62,16 @@ public class Interpreter {
             }
 
             try {
+                logger.fine("Executing statement: " + stmt);
                 stmt.execute();
+                logger.fine("Statement executed successfully");
             } catch (Exception e) {
+                logger.severe("Error executing statement: " + e.getMessage());
                 System.out.println(e);
             }
         }
+
+        logger.info("SILLY Interpreter shutting down");
         input.close();
     }
 }
