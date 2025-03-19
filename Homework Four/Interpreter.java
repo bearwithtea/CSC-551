@@ -46,7 +46,8 @@ public class Interpreter {
         }
 
         while (response.equals("") || inStream.hasNext()) {
-            System.out.print(">>> ");
+            // System.out.print(">>> "); uncomment this when submiting, just for testing
+            // purposes
             Statement stmt = Statement.getStatement(inStream);
             if (!response.equals("")) {
                 System.out.println(stmt);
