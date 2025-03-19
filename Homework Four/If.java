@@ -1,6 +1,3 @@
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
 /**
  * Derived class that represents an if statement in the SILLY language.
  * 
@@ -8,7 +5,6 @@ import java.util.logging.Level;
  * @version 1/20/25
  */
 public class If extends Statement {
-    private static final Logger logger = Logger.getLogger(If.class.getName());
 
     private Expression test;
     private Compound ifBody;
@@ -37,36 +33,28 @@ public class If extends Statement {
      * Executes the current if statement.
      */
     public void execute() throws Exception {
-        logger.info("Executing if statement");
 
         DataValue test = this.test.evaluate();
-        logger.fine("Test expression evaluated to: " + test);
 
         if (test.getType() != DataValue.Type.BOOLEAN) {
-            logger.warning("Non-boolean test expression in if statement");
             throw new Exception("RUNTIME ERROR: If statement requires Boolean test.");
         }
 
+        // TODO: ask if I need to have this in every single statemetn type
+        // as with other try-catch blocks dealing with return values, if a return
+        // statement is reached, the current scope is closed and the return exception is
+        // rethrown. see compond.java if this is unclear
         try {
             if (((Boolean) test.getValue())) {
-                logger.fine("Condition true, executing if branch");
                 this.ifBody.execute();
-                logger.fine("If branch executed normally");
             } else {
-                logger.fine("Condition false, executing else branch");
                 this.elseBody.execute();
-                logger.fine("Else branch executed normally");
             }
         } catch (Return.ReturnException re) {
-            logger.log(Level.INFO, "Return exception caught in if statement with value: {0}", re.getReturnValue());
-            logger.info("Re-throwing return exception from if statement");
-            throw re; // Critical: re-throw the exception
+            throw re;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error in if statement execution", e);
             throw e;
         }
-
-        logger.info("If statement execution completed normally");
     }
 
     /**

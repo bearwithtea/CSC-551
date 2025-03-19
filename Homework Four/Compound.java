@@ -1,16 +1,12 @@
 import java.util.ArrayList;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 /**
  * Derived class that represents a compound statement in the SILLY language.
  *
- * @author Dave Reed
+ * @author Dave Reed & Owen McGrath
  * @version 1/20/25
  */
 public class Compound extends Statement {
-    private static final Logger logger = Logger.getLogger(Compound.class.getName());
-
     private ArrayList<Statement> stmts;
 
     /**
@@ -31,39 +27,34 @@ public class Compound extends Statement {
     }
 
     /**
-     * Executes the current compound statement.
-     * Now properly handles return statements by propagating the ReturnException.
+     * Executes a compound statement by creating a new scope and executing all
+     * contained statements sequentially.
+     * 
+     * @throws Return.ReturnException If a return statement is executed within the
+     *                                compound block
+     * @throws Exception              If any other exception occurs during statement
+     *                                execution
      */
     public void execute() throws Exception {
-        logger.info("Beginning compound statement execution");
-        Interpreter.MEMORY.beginNestedScope();
-        logger.fine("Nested scope created");
+        Interpreter.MEMORY.beginNestedScope(); // creates a new scope
 
+        // try-catch block that attempts to iterate over the statements in the compound
+        // block if it is unable to do so, it will close the scope and rethrow the error
+        // indicating that a return statement was reached
         try {
             for (int i = 0; i < this.stmts.size(); i++) {
                 Statement stmt = this.stmts.get(i);
-                logger.fine("Executing statement " + (i + 1) + " of " + this.stmts.size() + ": "
-                        + stmt.getClass().getSimpleName());
                 stmt.execute();
-                logger.fine("Statement " + (i + 1) + " executed normally");
             }
-            logger.info("All statements in compound executed normally");
         } catch (Return.ReturnException re) {
-            logger.log(Level.INFO, "Return exception caught in compound with value: {0}", re.getReturnValue());
             Interpreter.MEMORY.endCurrentScope();
-            logger.fine("Nested scope ended due to return");
-            logger.info("Re-throwing return exception from compound");
-            throw re; // Critical: re-throw the exception
+            throw re; // rethrow the return exception, indicate that a return statement was reached
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error in compound statement", e);
             Interpreter.MEMORY.endCurrentScope();
-            logger.fine("Nested scope ended due to error");
-            throw e;
+            throw e; // rethrow the exception, indicating that an error occurred
         }
 
         Interpreter.MEMORY.endCurrentScope();
-        logger.fine("Nested scope ended normally");
-        logger.info("Compound statement execution completed");
     }
 
     /**

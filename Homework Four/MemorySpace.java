@@ -63,12 +63,21 @@ public class MemorySpace {
      */
     public void storeValue(Token variable, DataValue val) {
         ScopeRec currentScope = this.runtimeStack.peek();
+        ScopeRec existingScope = findScopeinStack(variable);
 
+        // series of cascading if statements to determine where to store the variable
+        // 1. if the variable is already declared in the current scope, store the value
+        // 2. if the variable is not declared, declare it and store the value
+        // 3. if the variable is declared in the parent scope, store the value in the
+        // current scope
+        // 4. if the variable is declared in a scope that is not the parent or current,
         if (currentScope.declaredInScope(variable)) {
             currentScope.storeInScope(variable, val);
-        } else if (findScopeinStack(variable) == null) {
+        } else if (existingScope == null) {
             declareVariable(variable);
             currentScope.storeInScope(variable, val);
+        } else if (existingScope == currentScope.getParentScope()) {
+            existingScope.storeInScope(variable, val);
         } else {
             declareVariable(variable);
             currentScope.storeInScope(variable, val);
