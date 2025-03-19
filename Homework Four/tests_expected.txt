@@ -1,0 +1,105 @@
+EXPECTED OUTPUTS FOR SILLY FUNCTION TESTS
+
+1. foo() function:
+   foo
+   true
+
+2. many() function:
+   bar
+   bar
+   bar
+   abcd
+   abcd
+
+3. last() function:
+   d
+   4
+   last=4
+
+4. square() function:
+   81
+   3
+   4
+   14
+
+5. test() function:
+   5
+   2
+   true
+
+6. stamp() function:
+   foodfoodfood
+
+7. sumRange() function:
+   55
+   55
+   55
+
+8. nestedReturn() function:
+   0
+   1
+   3
+
+9. factorial() function:
+   1
+   1
+   3628800
+
+10. fibonacci() function:
+    13
+    0
+    1
+    1
+    55
+
+11. negRecursion() function:
+    0
+    0
+    -4
+
+12. ackermann() function:
+    1
+    3
+    7
+    29
+
+13. multiReturn() function:
+    5
+    15
+    120
+    0
+
+14. simpleLoop() function:
+    1
+    2
+    3
+    4
+    5
+    5
+
+15. isEven/isOdd functions:
+    true
+    true
+
+16. testScope() function:
+    592
+    100
+    200
+
+17. nestedReturnTest(5) function:
+0
+1
+2
+3
+3
+42
+
+18. deeperNesting(0) function:
+0
+1
+2
+3
+1
+2
+2
+5

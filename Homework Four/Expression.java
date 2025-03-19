@@ -53,6 +53,7 @@ public class Expression {
      * 
      * @return the value represented by the expression
      */
+    @SuppressWarnings("unchecked")
     public DataValue evaluate() throws Exception {
         if (this.exprs == null) {
             if (this.tok.getType() == Token.Type.IDENTIFIER) {
@@ -260,56 +261,59 @@ public class Expression {
                     }
                 }
             } else if (this.tok.getType() == Token.Type.IDENTIFIER) {
+                Statement stmt = Interpreter.getFunction(this.tok.toString());
+                FunctionDecl function = (FunctionDecl) stmt;
+                ArrayList<Token> parameters = function.getParameters();
+
+                // performs checks to ensure that the function is declared, is a function, and
+                // has the correct number of parameters
                 if (!Interpreter.MEMORY.isDeclared(this.tok)) {
                     throw new Exception("RUNTIME ERROR: Function '" + this.tok + "' is not declared");
                 }
 
-                Statement stmt = Interpreter.getFunction(this.tok.toString());
                 if (!(stmt instanceof FunctionDecl)) {
                     throw new Exception("RUNTIME ERROR: '" + this.tok + "' is not a function");
                 }
-
-                FunctionDecl function = (FunctionDecl) stmt;
-                ArrayList<Token> parameters = function.getParameters();
 
                 if (parameters.size() != this.exprs.size()) {
                     throw new Exception("RUNTIME ERROR: Function '" + this.tok + "' expects " +
                             parameters.size() + " parameters, got " + this.exprs.size());
                 }
 
-                System.out.println("DEBUG: Evaluating function " + this.tok);
+                ///////// begins the actual evaluation of the function ///////////
 
                 Interpreter.MEMORY.beginNestedScope();
-
                 ArrayList<DataValue> evaluatedArgs = new ArrayList<>();
+                DataValue returnValue = new BooleanValue(true);
+
+                // code block that iterates over the arguments and evaluates them
                 for (int i = 0; i < this.exprs.size(); i++) {
                     DataValue argValue = this.exprs.get(i).evaluate();
                     evaluatedArgs.add(argValue);
-                    System.out.println("  Parameter " + parameters.get(i) + " = " + this.exprs.get(i) +
-                            " evaluates to " + argValue);
                 }
 
+                // code block that iterates over the parameters and stores the evaluated
+                // arguments
                 for (int i = 0; i < parameters.size(); i++) {
                     Interpreter.MEMORY.declareVariable(parameters.get(i));
                     Interpreter.MEMORY.storeValue(parameters.get(i), evaluatedArgs.get(i));
                 }
 
-                DataValue returnValue = new BooleanValue(true);
-
+                // try-catch block that attempts to iterate over the statements in the compound
+                // block if it is unable to do so, it will close the scope and rethrow the error
+                // indicating that a return statement was reached. if no return statement is
+                // reached a gerneal purpose exception is thrown
                 try {
                     function.getBody().execute();
                 } catch (Return.ReturnException re) {
                     returnValue = re.getReturnValue();
-                    System.out.println("DEBUG: Return value from " + this.tok + ": " + returnValue);
                 } catch (Exception e) {
                     Interpreter.MEMORY.endCurrentScope();
                     throw e;
                 }
 
                 Interpreter.MEMORY.endCurrentScope();
-                System.out.println("DEBUG: Function " + this.tok + " called with parameters: " + this.exprs +
-                        " returning: " + returnValue);
-                return returnValue;
+                return returnValue; // ha
             }
         }
         throw new Exception("RUNTIME ERROR: Unknown expression format.");

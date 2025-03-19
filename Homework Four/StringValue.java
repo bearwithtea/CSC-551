@@ -3,8 +3,9 @@ import java.util.List;
 
 /**
  * Class that represents a string value.
- *  @author Owen McGrath
- *  @version 2/07/25
+ * 
+ * @author Owen McGrath
+ * @version 2/07/25
  */
 public class StringValue extends ListValue {
 
@@ -17,7 +18,8 @@ public class StringValue extends ListValue {
 
     /**
      * Constructs a string value.
-     *   @param str the string being stored
+     * 
+     * @param str the string being stored
      */
     public StringValue(String str) {
         super(createCharValueList(str));
@@ -25,8 +27,9 @@ public class StringValue extends ListValue {
 
     /**
      * Helper method to convert a string into a list of CharValue objects.
-     *  @param str the string being converted
-     *  @return a list of CharValue objects representing the characters in the string
+     * 
+     * @param str the string being converted
+     * @return a list of CharValue objects representing the characters in the string
      */
     private static ArrayList<DataValue> createCharValueList(String str) {
         ArrayList<DataValue> charValues = new ArrayList<>();
@@ -38,7 +41,8 @@ public class StringValue extends ListValue {
 
     /**
      * Accesses the stored string value.
-     *   @return the string value (as an Object)
+     * 
+     * @return the string value (as an Object)
      */
     @Override
     public DataValue.Type getType() {
@@ -47,9 +51,11 @@ public class StringValue extends ListValue {
 
     /**
      * Converts the string value to a String.
-     *  @return a String representation of the string value
+     * 
+     * @return a String representation of the string value
      */
     @Override
+    @SuppressWarnings("unchecked")
     public String toString() {
         StringBuilder result = new StringBuilder();
         List<DataValue> value = (List<DataValue>) super.getValue();
@@ -61,7 +67,8 @@ public class StringValue extends ListValue {
 
     /**
      * Comparison method for StringValues.
-     *   @param other the value being compared with
+     * 
+     * @param other the value being compared with
      */
     @Override
     public int compareTo(DataValue other) {

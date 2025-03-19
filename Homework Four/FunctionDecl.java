@@ -4,7 +4,7 @@ import java.util.ArrayList;
  * Derived class that represents a function declaration in the SILLY language.
  * 
  * @author Owen McGrath
- * @version 2/20/25
+ * @version 3/10/25
  */
 public class FunctionDecl extends Statement {
     private Token name;
@@ -17,6 +17,9 @@ public class FunctionDecl extends Statement {
      * @param input the stream to be read from
      */
     public FunctionDecl(TokenStream input) throws Exception {
+
+        // code block that ensures the function is declared correctly, is an identifier,
+        // has a body, and has parameters that are identifiers
         if (!input.next().toString().equals("func")) {
             throw new Exception("SYNTAX ERROR: Malformed function declaration");
         }
@@ -75,15 +78,19 @@ public class FunctionDecl extends Statement {
      */
     @Override
     public void execute() throws Exception {
+        // ensures that no to functions can have the same name
         if (Interpreter.MEMORY.isDeclared(this.name)) {
             throw new Exception("RUNTIME ERROR: Variable or function '" + this.name + "' already declared");
         }
 
-        // Register the function with the interpreter
+        // need to register the function with the interpreter, otherwise it cannot be
+        // found
         Interpreter.registerFunction(this.name.toString(), this);
 
-        // Store a placeholder in memory to indicate function exists
+        // declare the function as a variable in memory
         Interpreter.MEMORY.declareVariable(this.name);
+
+        // store the function as a boolean value, makes the default value true
         Interpreter.MEMORY.storeValue(this.name, new BooleanValue(true));
     }
 

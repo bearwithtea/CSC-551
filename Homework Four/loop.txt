@@ -1,0 +1,46 @@
+func nestedReturnTest(max) {
+    count = 0
+    
+    while (< count max) {
+        count = (+ count 1)
+        print count
+        
+        if (== count 3) {
+            print 3
+            return 42
+        } else { }
+    }
+    
+    print 999
+    return 999
+}
+
+print 0
+result = (nestedReturnTest 5)
+print result
+
+func deeperNesting(n) {
+    i = 0
+    while (< i 10) {
+        i = (+ i 1)
+        print i
+        
+        if (> i 2) {
+            j = 0
+            while (< j 3) {
+                j = (+ j 1)
+                print j
+                
+                if (== j 2) {
+                    print j
+                    return (+ i j)
+                } else { }
+            }
+        } else { }
+    }
+    return 0
+}
+
+print 0
+result = (deeperNesting 0)
+print result

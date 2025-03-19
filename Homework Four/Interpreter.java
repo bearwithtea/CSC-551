@@ -33,6 +33,7 @@ public class Interpreter {
     }
 
     public static void main(String[] args) throws Exception {
+
         System.out.print(
                 "Enter the program file name or hit RETURN for interactive: ");
         Scanner input = new Scanner(System.in);
@@ -41,22 +42,28 @@ public class Interpreter {
         TokenStream inStream = new TokenStream();
         if (!response.equals("")) {
             inStream = new TokenStream(response);
+        } else {
         }
 
         while (response.equals("") || inStream.hasNext()) {
             System.out.print(">>> ");
-            Statement stmt = Statement.getStatement(inStream); // for the interactive version
-
+            Statement stmt = Statement.getStatement(inStream);
             if (!response.equals("")) {
                 System.out.println(stmt);
             }
 
+            // as with other try-catch blocks dealing with return values, if a return
+            // statement is reached, the current scope is closed and the return exception is
+            // rethrown. see compond.java if this is unclear
             try {
                 stmt.execute();
+            } catch (Return.ReturnException re) {
+                System.out.println("ERROR: Return statement outside of function");
             } catch (Exception e) {
                 System.out.println(e);
             }
         }
+
         input.close();
     }
 }

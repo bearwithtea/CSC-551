@@ -1,7 +1,8 @@
 /**
  * Derived class that represents a while statement in the SILLY language.
- *  @author Dave Reed
- *  @version 1/20/25
+ * 
+ * @author Dave Reed & Owen McGrath
+ * @version 1/20/25
  */
 public class While extends Statement {
 
@@ -10,7 +11,8 @@ public class While extends Statement {
 
     /**
      * Reads in a while statement from the specified stream
-     *   @param input the stream to be read from
+     * 
+     * @param input the stream to be read from
      */
     public While(TokenStream input) throws Exception {
         if (!input.next().toString().equals("while")) {
@@ -29,11 +31,15 @@ public class While extends Statement {
             DataValue eVal = this.expr.evaluate();
             if (eVal.getType() != DataValue.Type.BOOLEAN) {
                 throw new Exception(
-                    "RUNTIME ERROR: while statement requires Boolean test."
-                );
+                        "RUNTIME ERROR: while statement requires Boolean test.");
             }
             if ((Boolean) eVal.getValue()) {
-                this.body.execute();
+                try {
+                    this.body.execute();
+                } catch (Return.ReturnException re) {
+                    re.getReturnValue();
+                    throw re;
+                }
             } else {
                 keepLooping = false;
             }
@@ -42,7 +48,8 @@ public class While extends Statement {
 
     /**
      * Converts the current while statement into a String.
-     *   @return the String representation of this statement
+     * 
+     * @return the String representation of this statement
      */
     public String toString() {
         return "while " + this.expr + " " + this.body;

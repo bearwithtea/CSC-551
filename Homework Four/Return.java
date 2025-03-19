@@ -2,11 +2,13 @@
  * Derived class that represents a return statement in the SILLY language.
  *
  * @author Owen McGrath
- * @version 2/20/25
+ * @version 3/10/25
  */
 public class Return extends Statement {
 
     private Expression expr;
+
+    // a token that represents the return value of a function
     public static final Token RETURN_VALUE_TOKEN = new Token("__return__");
 
     public static class ReturnException extends Exception {
@@ -41,7 +43,6 @@ public class Return extends Statement {
     @Override
     public void execute() throws Exception {
         DataValue value = this.expr.evaluate();
-        // Throw special exception to signal return and pass the value
         throw new ReturnException(value);
     }
 

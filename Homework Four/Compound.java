@@ -3,11 +3,10 @@ import java.util.ArrayList;
 /**
  * Derived class that represents a compound statement in the SILLY language.
  *
- * @author Dave Reed
+ * @author Dave Reed & Owen McGrath
  * @version 1/20/25
  */
 public class Compound extends Statement {
-
     private ArrayList<Statement> stmts;
 
     /**
@@ -28,25 +27,33 @@ public class Compound extends Statement {
     }
 
     /**
-     * Executes the current compound statement.
-     * Now properly handles return statements by propagating the ReturnException.
+     * Executes a compound statement by creating a new scope and executing all
+     * contained statements sequentially.
+     * 
+     * @throws Return.ReturnException If a return statement is executed within the
+     *                                compound block
+     * @throws Exception              If any other exception occurs during statement
+     *                                execution
      */
     public void execute() throws Exception {
-        Interpreter.MEMORY.beginNestedScope();
+        Interpreter.MEMORY.beginNestedScope(); // creates a new scope
 
+        // try-catch block that attempts to iterate over the statements in the compound
+        // block if it is unable to do so, it will close the scope and rethrow the error
+        // indicating that a return statement was reached
         try {
-            for (Statement stmt : this.stmts) {
+            for (int i = 0; i < this.stmts.size(); i++) {
+                Statement stmt = this.stmts.get(i);
                 stmt.execute();
             }
         } catch (Return.ReturnException re) {
             Interpreter.MEMORY.endCurrentScope();
-            throw re;
+            throw re; // rethrow the return exception, indicate that a return statement was reached
         } catch (Exception e) {
             Interpreter.MEMORY.endCurrentScope();
-            throw e;
+            throw e; // rethrow the exception, indicating that an error occurred
         }
 
-        // End the scope when done
         Interpreter.MEMORY.endCurrentScope();
     }
 
