@@ -17,7 +17,6 @@ public class FunctionDecl extends Statement {
      * @param input the stream to be read from
      */
     public FunctionDecl(TokenStream input) throws Exception {
-
         // code block that ensures the function is declared correctly, is an identifier,
         // has a body, and has parameters that are identifiers
         if (!input.next().toString().equals("func")) {
@@ -78,19 +77,20 @@ public class FunctionDecl extends Statement {
      */
     @Override
     public void execute() throws Exception {
-        // ensures that no to functions can have the same name
+        // a check is performed to see if there is a variable with this name already
         if (Interpreter.MEMORY.isDeclared(this.name)) {
-            throw new Exception("RUNTIME ERROR: Variable or function '" + this.name + "' already declared");
+            throw new Exception("RUNTIME ERROR: Cannot declare function '" + this.name
+                    + "', a variable with this name already exists");
         }
 
-        // need to register the function with the interpreter, otherwise it cannot be
-        // found
+        // a check is performed to see if there is a function with this name already
+        if (Interpreter.MEMORY.isFunctionDeclared(this.name.toString())) {
+            throw new Exception("RUNTIME ERROR: Function '" + this.name + "' is already declared");
+        }
+
         Interpreter.registerFunction(this.name.toString(), this);
-
-        // declare the function as a variable in memory
+        Interpreter.MEMORY.storeFunction(this.name.toString(), this);
         Interpreter.MEMORY.declareVariable(this.name);
-
-        // store the function as a boolean value, makes the default value true
         Interpreter.MEMORY.storeValue(this.name, new BooleanValue(true));
     }
 

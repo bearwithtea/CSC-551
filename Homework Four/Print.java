@@ -24,7 +24,7 @@ public class Print extends Statement {
      * Executes the current print statement.
      */
     public void execute() throws Exception {
-        Interpreter.println(this.expr.evaluate().toString());
+        System.out.println(this.expr.evaluate().toString());
     }
 
     /**

@@ -40,10 +40,7 @@ public class If extends Statement {
             throw new Exception("RUNTIME ERROR: If statement requires Boolean test.");
         }
 
-        // TODO: ask if I need to have this in every single statemetn type
-        // as with other try-catch blocks dealing with return values, if a return
-        // statement is reached, the current scope is closed and the return exception is
-        // rethrown. see compond.java if this is unclear
+        // TODO: abstract this to another class
         try {
             if (((Boolean) test.getValue())) {
                 this.ifBody.execute();

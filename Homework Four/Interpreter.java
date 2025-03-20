@@ -1,21 +1,16 @@
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * Driver for the interactive SILLY Interpreter with output redirection to a
- * file.
+ * Driver for the interactive SILLY Interpreter.
  * 
- * @author Dave Reed (modified)
+ * @author Dave Reed
  * @version 1/20/25
  */
 public class Interpreter {
 
     public static MemorySpace MEMORY = new MemorySpace();
     private static HashMap<String, FunctionDecl> functions = new HashMap<>();
-    private static PrintWriter fileOutput;
 
     /**
      * Registers a function declaration in the interpreter.
@@ -38,23 +33,16 @@ public class Interpreter {
     }
 
     /**
-     * Custom println method that writes only to file
+     * Checks if a function exists with the given name.
      * 
-     * @param message The message to print
+     * @param name The name to check
+     * @return true if a function with the given name exists, false otherwise
      */
-    public static void println(String message) {
-        if (fileOutput != null) {
-            fileOutput.println(message);
-        }
+    public static boolean functionExists(String name) {
+        return functions.containsKey(name);
     }
 
     public static void main(String[] args) throws Exception {
-        try {
-            fileOutput = new PrintWriter(new FileWriter("actual.txt"));
-        } catch (IOException e) {
-            System.err.println("Error creating output file: " + e.getMessage());
-            return;
-        }
 
         System.out.print(
                 "Enter the program file name or hit RETURN for interactive: ");
@@ -68,18 +56,24 @@ public class Interpreter {
         }
 
         while (response.equals("") || inStream.hasNext()) {
+            System.out.print(">>> ");
             Statement stmt = Statement.getStatement(inStream);
+            if (!response.equals("")) {
+                System.out.println(stmt);
+            }
 
+            // as with other try-catch blocks dealing with return values, if a return
+            // statement is reached, the current scope is closed and the return exception is
+            // rethrown. see compond.java if this is unclear
             try {
                 stmt.execute();
             } catch (Return.ReturnException re) {
-                println("ERROR: Return statement outside of function");
+                System.out.println("ERROR: Return statement outside of function");
             } catch (Exception e) {
-                println(e.toString());
+                System.out.println(e);
             }
         }
 
         input.close();
-        fileOutput.close();
     }
 }

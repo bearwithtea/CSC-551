@@ -57,6 +57,7 @@ public class Expression {
     public DataValue evaluate() throws Exception {
         if (this.exprs == null) {
             if (this.tok.getType() == Token.Type.IDENTIFIER) {
+                // First check if the token is a valid variable name
                 if (!Interpreter.MEMORY.isDeclared(this.tok)) {
                     throw new Exception(
                             "RUNTIME ERROR: variable " +
@@ -261,19 +262,16 @@ public class Expression {
                     }
                 }
             } else if (this.tok.getType() == Token.Type.IDENTIFIER) {
-                Statement stmt = Interpreter.getFunction(this.tok.toString());
-                FunctionDecl function = (FunctionDecl) stmt;
-                ArrayList<Token> parameters = function.getParameters();
+                // Check that the identifier is a function and not a variable
+                FunctionDecl function = Interpreter.getFunction(this.tok.toString());
 
                 // performs checks to ensure that the function is declared, is a function, and
                 // has the correct number of parameters
-                if (!Interpreter.MEMORY.isDeclared(this.tok)) {
+                if (function == null) {
                     throw new Exception("RUNTIME ERROR: Function '" + this.tok + "' is not declared");
                 }
 
-                if (!(stmt instanceof FunctionDecl)) {
-                    throw new Exception("RUNTIME ERROR: '" + this.tok + "' is not a function");
-                }
+                ArrayList<Token> parameters = function.getParameters();
 
                 if (parameters.size() != this.exprs.size()) {
                     throw new Exception("RUNTIME ERROR: Function '" + this.tok + "' expects " +
@@ -302,7 +300,7 @@ public class Expression {
                 // try-catch block that attempts to iterate over the statements in the compound
                 // block if it is unable to do so, it will close the scope and rethrow the error
                 // indicating that a return statement was reached. if no return statement is
-                // reached a gerneal purpose exception is thrown
+                // reached a general purpose exception is thrown
                 try {
                     function.getBody().execute();
                 } catch (Return.ReturnException re) {
@@ -313,7 +311,7 @@ public class Expression {
                 }
 
                 Interpreter.MEMORY.endCurrentScope();
-                return returnValue; // ha
+                return returnValue;
             }
         }
         throw new Exception("RUNTIME ERROR: Unknown expression format.");
