@@ -403,12 +403,25 @@ func simpleFindValue(t arr) {
 print (simpleFindValue 3 [1 2 3 4 5])
 print (simpleFindValue 10 [1 2 3 4 5])
 
-func double(x) {
-    return (* x 2)
+func mapItemsDouble(arr) {
+    if (== (len arr) 0) {
+        return []
+    } else {
+        first = (get arr 0)
+        doubled = (* first 2) 
+        rest = []
+        
+        i = 1
+        while (< i (len arr)) {
+            rest = (cat rest [(get arr i)])
+            i = (+ i 1)
+        }
+        
+        return (cat [doubled] (mapItemsDouble rest))
+    }
 }
 
-print (mapItems double [1 2 3 4 5])
-
+print (mapItemsDouble [1 2 3 4 5])
 func testScopes() {
     x = 10
     
@@ -493,19 +506,13 @@ func makeAdder(n) {
 add5 = (makeAdder 5)
 print (add5 10)
 
-func mapItems(f arr) {
-    if (== (len arr) 0) {
-        return []
-    } else {
-        first = (get arr 0)
-        rest = []
-        
-        i = 1
-        while (< i (len arr)) {
-            rest = (cat rest [(get arr i)])
-            i = (+ i 1)
-        }
-        
-        return (cat [(f first)] (mapItems f rest))
-    }
+func nestedRepeatsSimple(n) {
+  sum = 0
+  
+  repeat n {
+    sum = (+ sum 1)
+  }
+  
+  print sum
+  return sum
 }
