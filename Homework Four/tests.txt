@@ -74,11 +74,10 @@ func foo() {
     print "foo"
 }
 
-foo = "x"
-print foo
-
 x = (foo)
 print x
+
+foo = "x"
 
 func nestedReturn(level) {
     if (== level 0) {
