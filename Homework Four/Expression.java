@@ -262,7 +262,7 @@ public class Expression {
                     }
                 }
             } else if (this.tok.getType() == Token.Type.IDENTIFIER) {
-                // Check that the identifier is a function and not a variable
+                // check that ensures the idenitifier is a function and not a variable
                 FunctionDecl function = Interpreter.getFunction(this.tok.toString());
 
                 // performs checks to ensure that the function is declared, is a function, and
