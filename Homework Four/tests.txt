@@ -72,9 +72,11 @@ print (sumRange 10 1)
 
 func foo() {
     print "foo"
+    return "foo" 
 }
 
 x = (foo)
+x = (cat "bar" x)
 print x
 
 foo = "x"
@@ -94,6 +96,10 @@ func nestedReturn(level) {
     }
     return 999
 }
+
+print (nestedReturn 0)
+print (nestedReturn 1)
+print (nestedReturn 2)
 
 sum = 10
 
