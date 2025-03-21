@@ -36,11 +36,8 @@ public class Compound extends Statement {
      *                                execution
      */
     public void execute() throws Exception {
-        Interpreter.MEMORY.beginNestedScope(); // creates a new scope
+        Interpreter.MEMORY.beginNestedScope(false);
 
-        // try-catch block that attempts to iterate over the statements in the compound
-        // block if it is unable to do so, it will close the scope and rethrow the error
-        // indicating that a return statement was reached
         try {
             for (int i = 0; i < this.stmts.size(); i++) {
                 Statement stmt = this.stmts.get(i);
@@ -48,10 +45,10 @@ public class Compound extends Statement {
             }
         } catch (Return.ReturnException re) {
             Interpreter.MEMORY.endCurrentScope();
-            throw re; // rethrow the return exception, indicate that a return statement was reached
+            throw re;
         } catch (Exception e) {
             Interpreter.MEMORY.endCurrentScope();
-            throw e; // throw the exception, indicating that an error occurred
+            throw e;
         }
 
         Interpreter.MEMORY.endCurrentScope();

@@ -9,15 +9,21 @@ import java.util.HashMap;
 public class ScopeRec {
     private HashMap<Token, DataValue> map;
     private ScopeRec parentScope;
+    private boolean isFunctionScope;
 
     /**
      * Constructs an empty scope record.
      * 
      * @param parent a reference to the parent scope record (null if no parent)
      */
-    public ScopeRec(ScopeRec parent) {
+    public ScopeRec(ScopeRec parent, boolean isFunctionScope) {
         this.map = new HashMap<Token, DataValue>();
         this.parentScope = parent;
+        this.isFunctionScope = isFunctionScope;
+    }
+
+    public ScopeRec(ScopeRec parent) {
+        this(parent, false);
     }
 
     /**
@@ -28,6 +34,15 @@ public class ScopeRec {
      */
     public boolean declaredInScope(Token variable) {
         return this.map.containsKey(variable);
+    }
+
+    /**
+     * Determines if this scope record is a function scope.
+     * 
+     * @return true if this is a function scope; else, false
+     */
+    public boolean isFunctionScope() {
+        return this.isFunctionScope;
     }
 
     /**

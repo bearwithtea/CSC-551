@@ -18,15 +18,22 @@ public class MemorySpace {
      */
     public MemorySpace() {
         this.runtimeStack = new Stack<ScopeRec>();
-        this.runtimeStack.push(new ScopeRec(null));
+        this.runtimeStack.push(new ScopeRec(null, false));
         this.functionMap = new HashMap<String, FunctionDecl>();
     }
 
     /**
      * Adds a new scope to the top of the runtime stack (linked to previous top).
      */
+    public void beginNestedScope(boolean isFunctionScope) {
+        this.runtimeStack.push(new ScopeRec(this.runtimeStack.peek(), isFunctionScope));
+    }
+
+    /**
+     * Adds a new block scope to the top of the runtime stack.
+     */
     public void beginNestedScope() {
-        this.runtimeStack.push(new ScopeRec(this.runtimeStack.peek())); // adds a new scope to the stack
+        beginNestedScope(false); // false indicates that it defaults to the block scoping
     }
 
     /**
@@ -65,17 +72,21 @@ public class MemorySpace {
         ScopeRec currentScope = this.runtimeStack.peek();
         ScopeRec existingScope = findScopeinStack(variable);
 
-        // this code block handles scoping
-        // 1. if the variable is declared the value is updated
-        // 2. if the variable is not declared, it is declared in the current scope
-        // 3. if the variable is found in any parent scope, it is updated there
         if (currentScope.declaredInScope(variable)) {
+            // If declared in current scope, update it there
             currentScope.storeInScope(variable, val);
-        } else if (existingScope == null) {
+        } else if (currentScope.isFunctionScope() && existingScope != null && existingScope != currentScope) {
+            // In a function scope, if variable exists in parent scope, create a new local
+            // variable instead
             declareVariable(variable);
             currentScope.storeInScope(variable, val);
-        } else {
+        } else if (existingScope != null) {
+            // Otherwise, update the variable in its original scope
             existingScope.storeInScope(variable, val);
+        } else {
+            // Not declared anywhere, create in current scope
+            declareVariable(variable);
+            currentScope.storeInScope(variable, val);
         }
     }
 

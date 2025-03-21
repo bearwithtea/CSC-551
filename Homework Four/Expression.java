@@ -4,7 +4,7 @@ import java.util.ArrayList;
  * Class that represents an expression in the SILLY language.
  * 
  * @author Dave Reed & Owen McGrath
- * @version 1/20/25, updated 3/10/25
+ * @version 1/20/25, updated 3/10/25ƒ
  */
 public class Expression {
 
@@ -280,7 +280,7 @@ public class Expression {
 
                 ///////// begins the actual evaluation of the function ///////////
 
-                Interpreter.MEMORY.beginNestedScope();
+                Interpreter.MEMORY.beginNestedScope(true);
                 ArrayList<DataValue> evaluatedArgs = new ArrayList<>();
                 DataValue returnValue = new BooleanValue(true);
 
