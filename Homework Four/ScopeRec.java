@@ -3,8 +3,8 @@ import java.util.HashMap;
 /**
  * Class that represents a scope record in the program execution.
  * 
- * @author Dave Reed
- * @version 1/20/25
+ * @author Dave Reed & Owen McGrath
+ * @version 1/20/25, updated 3/10/25
  */
 public class ScopeRec {
     private HashMap<Token, DataValue> map;

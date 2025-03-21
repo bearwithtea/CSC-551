@@ -4,7 +4,7 @@ import java.util.ArrayList;
  * Derived class that represents a compound statement in the SILLY language.
  *
  * @author Dave Reed & Owen McGrath
- * @version 1/20/25
+ * @version 1/20/25, updated 3/10/25
  */
 public class Compound extends Statement {
     private ArrayList<Statement> stmts;
@@ -51,7 +51,7 @@ public class Compound extends Statement {
             throw re; // rethrow the return exception, indicate that a return statement was reached
         } catch (Exception e) {
             Interpreter.MEMORY.endCurrentScope();
-            throw e; // rethrow the exception, indicating that an error occurred
+            throw e; // throw the exception, indicating that an error occurred
         }
 
         Interpreter.MEMORY.endCurrentScope();

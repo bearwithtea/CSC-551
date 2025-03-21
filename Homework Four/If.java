@@ -1,8 +1,8 @@
 /**
  * Derived class that represents an if statement in the SILLY language.
  * 
- * @author Dave Reed
- * @version 1/20/25
+ * @author Dave Reed & Owen McGrath
+ * @version 1/20/25, updated 3/10/25
  */
 public class If extends Statement {
 
@@ -40,7 +40,6 @@ public class If extends Statement {
             throw new Exception("RUNTIME ERROR: If statement requires Boolean test.");
         }
 
-        // TODO: abstract this to another class
         try {
             if (((Boolean) test.getValue())) {
                 this.ifBody.execute();

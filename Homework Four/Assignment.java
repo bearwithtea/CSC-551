@@ -1,8 +1,8 @@
 /**
  * Derived class that represents an assignment statement in the SILLY language.
  * 
- * @author Dave Reed
- * @version 1/20/25
+ * @author Dave Reed & Owen McGrath
+ * @version 1/20/25, updated 3/10/25
  */
 public class Assignment extends Statement {
     private Token vbl;
