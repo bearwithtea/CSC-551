@@ -1,8 +1,5 @@
 import java.util.HashMap;
 
-//TODO: understand why the `nestedRepeats` function has odd scoping
-//TODO: create test with an if inside of a while inside of a repeat
-
 /**
  * Class that represents a scope record in the program execution.
  * 

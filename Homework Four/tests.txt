@@ -118,13 +118,21 @@ print sum
 
 print (nestedRepeats 3)
 
-func nestedRepeatsSimple(n) {
-  sum = 0
-  
-  repeat n {
-    sum = (+ sum 1)
+func testNestedScoping() {
+  count = 0
+  repeat 3 {
+    i = 0
+    while (< i 3) {
+      if (== i 1) {
+        count = (+ count 1)
+        print count
+      } else { }
+      i = (+ i 1)
+    }
+    print count
   }
   
-  print sum
-  return sum
+  print count
+  return count
 }
+print (testNestedScoping)
