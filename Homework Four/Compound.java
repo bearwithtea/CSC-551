@@ -36,7 +36,7 @@ public class Compound extends Statement {
      *                                execution
      */
     public void execute() throws Exception {
-        Interpreter.MEMORY.beginNestedScope(false);
+        Interpreter.MEMORY.beginNestedScope();
 
         try {
             for (int i = 0; i < this.stmts.size(); i++) {

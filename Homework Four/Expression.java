@@ -278,9 +278,6 @@ public class Expression {
                             parameters.size() + " parameters, got " + this.exprs.size());
                 }
 
-                ///////// begins the actual evaluation of the function ///////////
-
-                Interpreter.MEMORY.beginNestedScope(true);
                 ArrayList<DataValue> evaluatedArgs = new ArrayList<>();
                 DataValue returnValue = new BooleanValue(true);
 
@@ -289,6 +286,8 @@ public class Expression {
                     DataValue argValue = this.exprs.get(i).evaluate();
                     evaluatedArgs.add(argValue);
                 }
+
+                Interpreter.MEMORY.beginFunctionScope();
 
                 // code block that iterates over the parameters and stores the evaluated
                 // arguments
