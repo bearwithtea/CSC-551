@@ -30,6 +30,8 @@ public class Assignment extends Statement {
      * Executes the current assignment statement.
      */
     public void execute() throws Exception {
+        // check if the variable is a function since variable and functions cannot have
+        // the same name
         if (Interpreter.MEMORY.isFunctionDeclared(this.vbl.toString())) {
             throw new Exception("RUNTIME ERROR: Cannot assign to variable '" + this.vbl
                     + "', a function with this name already exists");

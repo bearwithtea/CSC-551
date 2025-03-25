@@ -6,13 +6,15 @@
  */
 public class CharValue implements DataValue {
 
-    protected final Character value; // the character being stored
+    protected final Character value;
 
     /**
      * Creates a default character value (empty).
      */
     public CharValue() {
-        this('_'); // default value is just empty
+        // default value is just an underscore since our syntax rules prevent this from
+        // being empty
+        this('_');
     }
 
     /**

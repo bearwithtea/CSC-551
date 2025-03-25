@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class MemorySpace {
     private Stack<ScopeRec> runtimeStack; // represents the nested scopes
-    private Map<String, FunctionDecl> functionMap; // create a map that stores the name of the function and the function
+    private Map<String, FunctionDecl> functionMap; // map that stores the name of the function and the function
                                                    // declaration
 
     /**
@@ -25,7 +25,6 @@ public class MemorySpace {
     /**
      * Adds a new scope to the top of the runtime stack (linked to previous top).
      */
-    // remove parameter
     public void beginNestedScope() {
         this.runtimeStack.push(new ScopeRec(this.runtimeStack.peek()));
     }

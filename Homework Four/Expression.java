@@ -53,6 +53,8 @@ public class Expression {
      * 
      * @return the value represented by the expression
      */
+    // this is just to get rid of those pesky "warnings" that java gives you it has
+    // no effect on the code
     @SuppressWarnings("unchecked")
     public DataValue evaluate() throws Exception {
         if (this.exprs == null) {
@@ -265,8 +267,8 @@ public class Expression {
                 // check that ensures the idenitifier is a function and not a variable
                 FunctionDecl function = Interpreter.getFunction(this.tok.toString());
 
-                // performs checks to ensure that the function is declared, is a function, and
-                // has the correct number of parameters
+                // this block performs checks to ensure that the function is declared, is a
+                // function, and has the correct number of parameters
                 if (function == null) {
                     throw new Exception("RUNTIME ERROR: Function '" + this.tok + "' is not declared");
                 }
