@@ -20,7 +20,7 @@ public class FunctionDecl extends Statement {
         // code block that ensures the function is declared correctly, is an identifier,
         // has a body, and has parameters that are identifiers
         if (!input.next().toString().equals("func")) {
-            throw new Exception("SYNTAX ERROR: Malformed function declaration");
+            throw new Exception("SYNTAX ERROR: Malnourished function declaration");
         }
 
         this.name = input.next();
