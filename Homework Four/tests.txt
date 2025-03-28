@@ -144,3 +144,53 @@ func testNestedScoping() {
 }
 
 print (testNestedScoping)
+
+func basicTest() {
+    count = 0
+    repeat 5 {
+      count = (+ count 1)
+      if (== count 3) {
+        return count
+      } else { }
+    }
+    return 999  
+  }
+
+func nestedTest() {
+    count = 0
+    repeat 3 {
+      repeat 3 {
+        count = (+ count 1)
+        if (== count 5) {
+          return count
+        } else { }
+      }
+    }
+    return 999 
+  }
+func conditionalTest(n) {
+    result = 0
+    repeat 10 {
+      result = (+ result 1)
+      if (== result n) {
+        return (cat "Found " (str result))
+      } else { }
+    }
+    return "Not found"
+  }
+
+func nestedTest() {
+    outer = 0
+    inner = 0
+    while (< outer 3) {
+      outer = (+ outer 1)
+      inner = 0
+      while (< inner 3) {
+        inner = (+ inner 1)
+        if (and (== outer 2) (== inner 2)) {
+          return (* outer inner)
+        } else { }
+      }
+    }
+    return 999  
+  }

@@ -59,7 +59,6 @@ public class Expression {
     public DataValue evaluate() throws Exception {
         if (this.exprs == null) {
             if (this.tok.getType() == Token.Type.IDENTIFIER) {
-                // First check if the token is a valid variable name
                 if (!Interpreter.MEMORY.isDeclared(this.tok)) {
                     throw new Exception(
                             "RUNTIME ERROR: variable " +
@@ -208,7 +207,8 @@ public class Expression {
                             "RUNTIME ERROR: List or String value expected.");
                 }
 
-                ArrayList<DataValue> list = (ArrayList<DataValue>) first.getValue();
+                ArrayList<DataValue> list = new ArrayList<DataValue>();
+                list.addAll((ArrayList<DataValue>) first.getValue());
 
                 if (this.tok.toString().equals("len")) {
                     if (this.exprs.size() != 1) {
@@ -291,7 +291,7 @@ public class Expression {
 
                 Interpreter.MEMORY.beginFunctionScope();
 
-                // code block that iterates over the parameters and stores the evaluated
+                // code block that iterats over the parameters and stores the evaluated
                 // arguments
                 for (int i = 0; i < parameters.size(); i++) {
                     Interpreter.MEMORY.declareVariable(parameters.get(i));
