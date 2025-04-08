@@ -114,7 +114,7 @@
   (defn count-helper [rolls-left count-so-far] ;; helper function to keep track of rolls left and count of desired total
     (if (zero? rolls-left) ;; base case: if no rolls left, return count 
       count-so-far ;; return the count of desired total
-      (let [roll (dice-roll sides)] ;; roll the dice
+      (let [roll (dice-roll sides)] ;; roll the dice THIS HAS TO BE LET SINCE WE USE ROLL LATER
         (if (= roll desired-total) ;; check if the roll matches the desired total
           (recur (dec rolls-left) (inc count-so-far)) ;; increment count if it matches
           (recur (dec rolls-left) count-so-far))))) ;; otherwise, just decrement rolls left
@@ -127,12 +127,12 @@
 
 (defn count-all [num-rolls sides]
   (defn count-helper [rolls-left counts]
-    (if (zero? rolls-left)
-      counts
-      (let [roll (dice-roll sides)]
-        (recur (dec rolls-left) (inc-nth counts (- roll 2))))))
+    (if (zero? rolls-left) ;; base case: if no rolls left, return counts
+      counts 
+      (let [roll (dice-roll sides)] ;; roll the dice
+        (recur (dec rolls-left) (inc-nth counts (- roll 2)))))) ;; decrement the roll by 2 to get the index in the counts list
 
-  (count-helper num-rolls (repeat (- (* 2 sides) 1) 0)))
+  (count-helper num-rolls (repeat (- (* 2 sides) 1) 0))) ;; call the helper function with initial rolls and counts, where counts is a list of zeros of size (2 * sides - 1)
 
 (count-all 10000 6)
 
@@ -153,12 +153,13 @@
 
 (defn craps-percent [num-games]
   (defn count-helper [games-left wins]
-    (if (zero? games-left)
-      (/ wins num-games)
-      (let [result (craps)]
-        (if (= result :WINNER)
-          (recur (dec games-left) (inc wins))
-          (recur (dec games-left) wins)))))
-  (count-helper num-games 0))
+    (if (zero? games-left) ;; base case: if no games left, return the percentage
+      (/ wins num-games) ;; return the percentage of wins 
+      (let [result (craps)] ;; roll the dice, store the result in result var
+        (if (= result :WINNER) ;; check if the result is a win
+          (recur (dec games-left) (inc wins)) ;; increment wins if it is
+          (recur (dec games-left) wins))))) ;; otherwise, just decrement games left
+  
+  (count-helper num-games 0)) ;; call the helper function with initial games and wins
 
 (craps-percent 20)
