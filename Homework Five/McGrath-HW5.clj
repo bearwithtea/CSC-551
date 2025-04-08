@@ -2,21 +2,21 @@
 ;; Define a function named delay-in-sec that takes one input, a distance in miles, and returns the number of seconds it takes for light to travel that distance. The return value should be rounded to the nearest integer. For example, (delay-in-sec 93000000) should evaluate to 499.
 
 (defn delay-in-sec [distance]
-  (int (Math/round (/ distance 186262.00))))
+  (int (Math/round (/ distance 186262.00)))) ;; divide the provided distance by the speed of light in miles per second
 
 (delay-in-sec 93000000)
 
-;; Define a function named sec->min that takes one input, a number of seconds, and returns the corresponding number of minutes. Note that this function should always return a decimal value (not a rational). For example, (sec->min 150) should evaluate to 2.5.
+;; Define a function named sec->min that takes one input, a number of seconds, and returns the corresponding number of minutes. Note that this function should always return a decimal value (not a rational). For example, (sec->min 150) should evaluate to 2.5.j
 
 (defn sec->min [seconds]
-  (double (/ seconds 60)))
+  (double (/ seconds 60))) ;; divide the provided seconds by 60 to convert to minutes, then cast to double
 
 (sec->min 150)
 
 ;;  Define a function named delay-in-min that takes one input, a distance in miles, and returns the number of minutes it takes for light to travel that distance. For example, (delay-in-min 93000000) should evaluate to approximately 8.3.
 
 (defn delay-in-min [distance]
-  (sec->min (delay-in-sec distance)))
+  (sec->min (delay-in-sec distance))) ;; call seconds to minutes with the result of delay-in-sec as the parameter
 
 (delay-in-min 93000000)
 
@@ -24,21 +24,21 @@
 ;; Define a function named observer-time that takes two inputs, a distance in light years and a fraction of light speed, and returns the number of years it would take to travel that distance to an outside observer. For example, (observer-time 4.2 0.5) should evaluate to 8.4.
 
 (defn observer-time [distance-in-light-speed frac-of-light-speed]
-  (/ distance-in-light-speed frac-of-light-speed))
+  (/ distance-in-light-speed frac-of-light-speed)) ;; divide the distance by the fraction of light speed to get the time in years
 
 (observer-time 4.2 0.5)
 
 ;; Define a function named dilation-factor that takes one input, a fraction of light speed, and returns the corresponding dilation factor. For example, (dilation-factor 0.5) should evaluate to approximately 0.866.
 
-(defn dilation-factor [frac-of-light-speed]
-  (/ 1 (Math/sqrt (- 1 (Math/pow frac-of-light-speed 2)))))
+(defn dilation-factor [frac-of-light-speed] 
+  (Math/sqrt (- 1 (Math/pow frac-of-light-speed 2)))) ;; subtract the square of the fraction from 1, then take the square root to get the dilation factor
 
 (dilation-factor 0.5)
 
 ;; Define a function named traveler-time that takes two inputs, a distance in light years and a fraction of light speed, and returns the number of years it would take to travel that distance to a traveler. For example, (traveler-time 4.2 0.5) should evaluate to approximately 7.27.
 
 (defn traveler-time [distance-in-light-speed frac-of-light-speed]
-  (/ (observer-time distance-in-light-speed frac-of-light-speed)
+  (* (observer-time distance-in-light-speed frac-of-light-speed) ;; multiply the observer time by the dilation factor
      (dilation-factor frac-of-light-speed)))
 
 (traveler-time 4.2 0.5)
@@ -47,15 +47,15 @@
 ;; While both functions behave correctly if the specified index is in bounds (0 ≤ index < list size), they return different values if the index is out of bounds. The latter simply returns an unchanged copy of the list. The former returns a bizarre list, with nils added at the end. Modify remove-nth-A so that it behaves the same as remove-nth-B (i.e., returns the unchanged list) when the index is out of bounds. 
 
 (defn remove-nth-A [arblist n]
-  (if (or (zero? n) (empty? arblist)) 
-    (rest arblist) 
-    (cons (first arblist) (remove-nth-A (rest arblist) (dec n))))) 
+  (if (or (zero? n) (empty? arblist))  ;;if the list is empty or n is 0
+    (rest arblist) ;; returns the rest of the list
+    (cons (first arblist) (remove-nth-A (rest arblist) (dec n))))) ;;otherwise, put the first elemnet of the arblist and recurisvely call the function on the rest of the list, decrementing n
 
 (remove-nth-A '(1 2 3 4 5) 0)
 (remove-nth-A '(1 2 3 4 5) 9)
 
 (defn remove-nth-B  [arblist n]
-  (concat (take n arblist) (nthrest arblist (inc n)))) 
+  (concat (take n arblist) (nthrest arblist (inc n)))) ;; takes the first n elements and then adds the rest of the list starting at index n+1 
 
 (remove-nth-B '(1 2 3 4 5) 2)
 (remove-nth-B '(1 2 3 4 5) 9)
@@ -114,25 +114,51 @@
   (defn count-helper [rolls-left count-so-far] ;; helper function to keep track of rolls left and count of desired total
     (if (zero? rolls-left) ;; base case: if no rolls left, return count 
       count-so-far ;; return the count of desired total
-      (let [roll (dice-roll sides)] ;; roll the dice, there has to be a let binding here since we need to use the roll in the next line idk how else to do it
+      (let [roll (dice-roll sides)] ;; roll the dice
         (if (= roll desired-total) ;; check if the roll matches the desired total
-          (count-helper (dec rolls-left) (inc count-so-far)) ;; increment count if it matches
-          (count-helper (dec rolls-left) count-so-far))))) ;; otherwise, just decrement rolls left
+          (recur (dec rolls-left) (inc count-so-far)) ;; increment count if it matches
+          (recur (dec rolls-left) count-so-far))))) ;; otherwise, just decrement rolls left
 
-  (count-helper num-rolls 0)) ;; call the helper function with initial rolls and count, helps to keep track of the of the count so far 
+  (count-helper num-rolls 0)) ;; call the helper function with initial rolls and count
 
 (count-rolls 1000 6 7)
 
 ;; Define a function named count-all that takes two inputs, both positive integers, representing a number of rolls and the number of die sides. The function should repeatedly call the dice-roll function to simulate that many rolls and return a list with the counts for all dice totals. For example, the call (count-all 10000 6) might return (288 526 824 1093 1388 1708 1413 1115 811 563 271), signifying that 288 rolls totaled 2, 526 rolls totaled 3, 824 rolls totaled 4, etc. Since the number of rolls could be large, your function should utilize tail-recursion. Note: you should be able to make use of your inc-nth function here.
 
 (defn count-all [num-rolls sides]
-  (defn count-helper [rolls-left counts] ;; helper function to keep track of rolls left and counts
-    (if (zero? rolls-left) ;; base case: if no rolls left, return counts
+  (defn count-helper [rolls-left counts]
+    (if (zero? rolls-left)
       counts
-      (let [roll (dice-roll sides)] ;; roll the dice
-        (count-helper (dec rolls-left) (inc-nth counts (- roll 2)))))) ;; adjust index by subtracting 2
+      (let [roll (dice-roll sides)]
+        (recur (dec rolls-left) (inc-nth counts (- roll 2))))))
 
-  ;; initialize with zeros for totals 2 through 2*sides (inclusive)
   (count-helper num-rolls (repeat (- (* 2 sides) 1) 0)))
 
 (count-all 10000 6)
+
+;; fun for the casino
+
+(defn craps []
+  (defn roll-until [point]
+    (let [next-roll (dice-roll 6)]
+      (cond (== next-roll 7) :LOSER
+            (== next-roll point) :WINNER
+            :else (recur point))))
+  (let [roll (dice-roll 6)]
+    (cond (or (== roll 2) (== roll 12)) :LOSER
+          (== roll 7) :WINNER
+          :else (roll-until roll))))
+
+;;Define a function named craps-percent that has one input, a number of games to simulate, and which returns the percentage of those simulated games that resulted in wins (as a decimal). For example, the call (craps-percent 20) might return 0.4, singifying that 8 out of the 20 games (or 40%) were wins. Since the number of games could be large, your function should utilize tail-recursion. 
+
+(defn craps-percent [num-games]
+  (defn count-helper [games-left wins]
+    (if (zero? games-left)
+      (/ wins num-games)
+      (let [result (craps)]
+        (if (= result :WINNER)
+          (recur (dec games-left) (inc wins))
+          (recur (dec games-left) wins)))))
+  (count-helper num-games 0))
+
+(craps-percent 20)
