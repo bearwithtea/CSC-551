@@ -146,7 +146,7 @@
 
   (count-helper num-rolls (repeat (- (* 2 sides) 1) 0))) ;; call the helper function with initial rolls and counts, where counts is a list of zeros of size (2 * sides - 1)
 
-;; (count-all 10000 6)
+;; (count-all 10000 6) nice bell curve lol
 
 ;; fun for the casino
 
@@ -167,7 +167,7 @@
   (defn count-helper [games-left wins]
     (if (zero? games-left) ;; base case: if no games left, return the percentage
       (double (/ wins num-games)) ;; convert the ratio to a decimal
-      (let [result (craps)] ;; roll the dice, store the result in result var
+      (let [result (craps)] ;; roll the dice, store the result in result 
         (if (= result :WINNER) ;; check if the result is a win
           (recur (dec games-left) (inc wins)) ;; increment wins if it is
           (recur (dec games-left) wins))))) ;; otherwise, just decrement games left
