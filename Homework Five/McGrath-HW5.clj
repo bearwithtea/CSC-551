@@ -1,8 +1,10 @@
 ;; light speed
 ;; Define a function named delay-in-sec that takes one input, a distance in miles, and returns the number of seconds it takes for light to travel that distance. The return value should be rounded to the nearest integer. For example, (delay-in-sec 93000000) should evaluate to 499.
 
- (defn delay-in-sec [distance]
-   (int (Math/round (/ distance 186262.00)))) ;; divide the provided distance by the speed of light in miles per second
+(defn delay-in-sec [distance]
+  (if (neg? distance)
+    0  ; if the distance is negative, return 0 since light cannot travel negative distances
+    (int (Math/round (/ distance 186262.00))))) ;; divide the provided distance by the speed of light in miles per second
 
 ;; (delay-in-sec 93000000)
 
@@ -21,6 +23,7 @@
 ;; (delay-in-min 93000000)
 
 ;; relatively speaking
+
 ;; Define a function named observer-time that takes two inputs, a distance in light years and a fraction of light speed, and returns the number of years it would take to travel that distance to an outside observer. For example, (observer-time 4.2 0.5) should evaluate to 8.4.
 
 (defn observer-time [distance-in-light-speed frac-of-light-speed]
@@ -55,9 +58,9 @@
     (zero? n) (rest arblist) ;; returns the rest of the list if n is 0
     :else (cons (first arblist) (remove-nth-A (rest arblist) (dec n))))) ;;otherwise, put the first elemnet of the arblist and recurisvely call the function on the rest of the list, decrementing n
 
-(remove-nth-A '(1 2 3 4 5) 0)
-(remove-nth-A '(1 2 3 4 5) 9)
-(remove-nth-A '(1 2 3 4 5) -9)
+;; (remove-nth-A '(1 2 3 4 5) 0)
+;; (remove-nth-A '(1 2 3 4 5) 9)
+;; (remove-nth-A '(1 2 3 4 5) -9)
 
 (defn remove-nth-B  [arblist n]
   (concat (take n arblist) (nthrest arblist (inc n)))) ;; takes the first n elements and then adds the rest of the list starting at index n+1 
@@ -111,7 +114,9 @@
 ;; Define a function named dice-roll that has one input, the number of sides, and returns the sum of two die rolls with that number of sides each. For example, (dice-roll 8) would return the sum of two 8-sided dice.
 
 (defn dice-roll [sides]
-  (+ (inc (rand-int sides)) (inc (rand-int sides)))) ;; generates a random number between 1 and the number of sides, inclusive, for two dice and adds them together
+  (if (<= sides 0)
+    0 ;; if the number of sides is less than or equal to 0, return 0
+    (+ (inc (rand-int sides)) (inc (rand-int sides))))) ;; generates a random number between 1 and the number of sides, inclusive, for two dice and adds them together
 
 ;; (dice-roll 8)
 
@@ -161,7 +166,7 @@
 (defn craps-percent [num-games]
   (defn count-helper [games-left wins]
     (if (zero? games-left) ;; base case: if no games left, return the percentage
-      (/ wins num-games) ;; return the percentage of wins 
+      (double (/ wins num-games)) ;; convert the ratio to a decimal
       (let [result (craps)] ;; roll the dice, store the result in result var
         (if (= result :WINNER) ;; check if the result is a win
           (recur (dec games-left) (inc wins)) ;; increment wins if it is
