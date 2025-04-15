@@ -48,13 +48,16 @@
 ;; While both functions behave correctly if the specified index is in bounds (0 ≤ index < list size), they return different values if the index is out of bounds. The latter simply returns an unchanged copy of the list. The former returns a bizarre list, with nils added at the end. Modify remove-nth-A so that it behaves the same as remove-nth-B (i.e., returns the unchanged list) when the index is out of bounds. 
 
 (defn remove-nth-A [arblist n]
-  (if (or (zero? n) (empty? arblist))  ;;if the list is empty or n is 0
-    (rest arblist) ;; returns the rest of the list
-    (cons (first arblist) (remove-nth-A (rest arblist) (dec n))))) ;;otherwise, put the first elemnet of the arblist and recurisvely call the function on the rest of the list, decrementing n
+  (cond
+    (empty? arblist) arblist
+    (< n 0) arblist ;; checks to see if the index is negative
+    (>= n (count arblist)) arblist  ;;checks to see if index is greater than the length of the list
+    (zero? n) (rest arblist) ;; returns the rest of the list if n is 0
+    :else (cons (first arblist) (remove-nth-A (rest arblist) (dec n))))) ;;otherwise, put the first elemnet of the arblist and recurisvely call the function on the rest of the list, decrementing n
 
-;; (remove-nth-A '(1 2 3 4 5) 0)
-;; (remove-nth-A '(1 2 3 4 5) 9)
-;; (remove-nth-A '() 0)
+(remove-nth-A '(1 2 3 4 5) 0)
+(remove-nth-A '(1 2 3 4 5) 9)
+(remove-nth-A '(1 2 3 4 5) -9)
 
 (defn remove-nth-B  [arblist n]
   (concat (take n arblist) (nthrest arblist (inc n)))) ;; takes the first n elements and then adds the rest of the list starting at index n+1 
