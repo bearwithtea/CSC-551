@@ -1,4 +1,6 @@
 *.class
-Homework Five/.clj-kondo/.cache/v1/lock
-Homework Five/.clj-kondo/.cache/v1/clj/user.transit.json
-Homework Five/.lsp/.cache/db.transit.json
+**/.clj-kondo/.cache/v1/lock
+**/.clj-kondo/.cache/v1/clj/user.transit.json
+**/.lsp/.cache/db.transit.json
+**/.clj-kondo/.cache/v1/lock
+**/.lsp/.cache/db.transit.json
