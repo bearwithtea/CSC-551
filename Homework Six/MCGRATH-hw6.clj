@@ -178,4 +178,69 @@
           :else
           (recur rest-els sum)))))) ;;otherwise just recur through the rest of the elements
 
-(molecular-weight3 '((:C :H 3) 2 :C :H :O :H)) 
+(molecular-weight3 '((:C :H 3) 2 :C :H :O :H))
+
+;; In class, we discussed how structured lists could be used to represent binary trees. For example, the following lists represent a tree of animal names (strings) and a tree of numbers, respectively.
+
+(def ANIMALS
+  '(:dog
+    (:bird (:horse () ()) (:cat () ()))
+    (:possum (:dog () ()) ())))
+
+(def NUMBERS
+  '(2 (-1 () ()) (3 () ())))
+
+;; Define a function named rightmost that takes one input, a list representing a binary tree, and returns the rightmost value in the tree. For example, (rightmost ANIMALS) should evaluate to possum. Note: since an empty tree does not have a rightmost element, the function should return nil when applied to an empty tree.
+
+(defn rightmost [btree]
+  (if (empty? btree)
+    nil ;;todo: ask if this is the right way to do this
+    (if (empty? (right-subtree btree)) ;;if the right subtree of the da tree is empty
+      (root btree) ;;if it is, return the root
+      (rightmost (right-subtree btree))))) ;;otherwise, recur through the right subtree
+
+;; Define a function named leftmost that takes one input, a list representing a binary tree, and returns the leftmost value in the tree. For example, (leftmost ANIMALS) should evaluate to horse. Note: since an empty tree does not have a leftmost element, the function should return nil when applied to an empty tree.
+
+(defn leftmost [btree]
+  (if (empty? btree)
+    nil
+    ;; same as above but for the left subtree
+    (if (empty? (left-subtree btree))
+      (root btree)
+      (leftmost (left-subtree btree)))))
+
+;; Define a function named is-bst? that takes one input, a list representing a binary tree, and returns true if that list is a binary search tree (otherwise false). For example, (is-bst? NUMBERS) should evaluate to true, while (is-bst? ANIMALS) should evaluate to false.
+
+(defn is-bst? [btree]
+  (if (empty? btree)
+    true ;;technically a an empty tree is a binary search tree
+    (let [root-value (root btree) ;;get the root value of the tree
+          left-value (left-subtree btree) ;;get the left subtree
+          right-value (right-subtree btree)] ;;get the right subtree
+      (and (or (empty? left-value) (< (root left-value) root-value)) ;;check if the left subtree is empty or if the root of the left subtree is less than the root of the tree
+           (or (empty? right-value) (> (root right-value) root-value)) ;;check if the right subtree is empty or if the root of the right subtree is greater than the root of the tree
+           (is-bst? left-value) ;;recur check if the left subtree is a binary search tree
+           (is-bst? right-value))))) ;;recur check if the right subtree is a binary search tree
+
+;; Define a function named is-balanced? that takes one input, a list representing a binary tree, and returns true if that list is relatively balanced (otherwise false) . For example, (is-balanced? ANIMALS) and (is-balanced? NUMBERS) should both evaluate to false.
+
+(defn is-balanced? [btree]
+  (if (empty? btree)
+    true ;;againm an empty tree is balanced
+    (let [left-height (height (left-subtree btree)) ;;get the height of the left subtree
+          right-height (height (right-subtree btree))] ;; get the height of the right subtree
+      (and (<= (Math/abs (- left-height right-height)) 1) ;;check if the absolute difference between the left and right heights is less than or equal to 1
+           (is-balanced? (left-subtree btree)) ;;recur check if the left subtree is balanced
+           (is-balanced? (right-subtree btree)))))) ;;recur check if the right subtree is balanced
+
+;; Define a function named is-avl? that takes one input, a list representing a binary tree, and returns true if that list is an AVL tree (otherwise false) . For example, (is-avl? NUMBERS) should evaluate to true, while (is-avl? ANIMALS) should evaluate to false. 
+
+(defn is-avl? [btree]
+  (if (empty? btree)
+    true ;; an empty tree is an AVL tree
+    (let [left-height (height (left-subtree btree)) ;; get the height of the left subtree
+          right-height (height (right-subtree btree))] ;; get the height of the right subtrees
+      (and (<= (Math/abs (- left-height right-height)) 1) ;; check if the absolute difference betwen the left and ride heights is less than or rqual to one
+           (is-bst? btree) ;; check if the tree is a binary search tree
+           (is-avl? (left-subtree btree)) ;; recur check if the left subtree is an AVL tree
+           (is-avl? (right-subtree btree)))))) ;; recur check if the right subtree is an AVL tree
