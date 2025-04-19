@@ -244,3 +244,18 @@
            (is-bst? btree) ;; check if the tree is a binary search tree
            (is-avl? (left-subtree btree)) ;; recur check if the left subtree is an AVL tree
            (is-avl? (right-subtree btree)))))) ;; recur check if the right subtree is an AVL tree
+
+;;Define a function named roll-until-doubles that utilizes this "class" to simulate repeated dice rolls until doubles are obtained. The function should have one input, the number of die sides, and should return the number of rolls required to achieve doubles. In addition, each pair of dice rolls should be displayed. For example, (roll-until-doubles 6) might produce the following:
+
+(defn roll-until-doubles [sides]
+  (let [die1 (make-die sides) ;;create a die with the number of sides
+        die2 (make-die sides)] ;;create a second die with the same number of sides
+    (loop [rolls 0] ;;start with 0 rolls
+      (let [roll1 (roll die1) ;;roll the first die
+            roll2 (roll die2)] ;;roll the second die
+        (println "Roll:" roll1 roll2) ;;print the rolls NOT FUNCTIONAL
+        (if (= roll1 roll2) ;;check if the rolls are equal
+          rolls ;;if they are, return the number of rolls
+          (recur (inc rolls))))))) ;;otherwise, recur with the number of rolls incremented by one
+
+(roll-until-doubles 6) 
